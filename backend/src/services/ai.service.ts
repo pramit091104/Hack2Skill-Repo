@@ -27,8 +27,13 @@ export const analyzeMealText = async (text: string) => {
 };
 
 export const chatWithAi = async (messages: {role: string, content: string}[], uid: string) => {
-  const userDoc = await db.collection('users').doc(uid).get();
-  const profile = userDoc.exists ? userDoc.data() : {};
+  let profile: Record<string, unknown> = {};
+  try {
+    const userDoc = await db.collection('users').doc(uid).get();
+    profile = userDoc.exists ? (userDoc.data() as Record<string, unknown>) : {};
+  } catch (e) {
+    console.warn('[chatWithAi] Could not fetch user profile:', e);
+  }
 
   const systemInstruction = `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.`;
 
@@ -59,13 +64,17 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
     parts: [{ text: m.content }],
   }));
 
-  const chatModel = geminiFlash.startChat({
-    systemInstruction,
-    history,
-  });
+  console.log('[chatWithAi] history length:', history.length, '| latestMsg:', latestMsg.slice(0, 80));
 
-  const result = await chatModel.sendMessage(latestMsg);
-  return result.response.text();
+  try {
+    const chatModel = geminiFlash.startChat({ systemInstruction, history });
+    const result = await chatModel.sendMessage(latestMsg);
+    return result.response.text();
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[chatWithAi] Gemini error:', msg);
+    throw new Error(`Gemini API error: ${msg}`);
+  }
 };
 
 export const generateRecommendations = async (uid: string) => {
