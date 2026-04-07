@@ -18,11 +18,12 @@ export default function Chatbot() {
 
     const userMessage = input;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const newMessages: {role: 'ai'|'user', content: string}[] = [...messages, { role: 'user', content: userMessage }];
+    setMessages(newMessages);
     setLoading(true);
 
     try {
-      const res = await api.post('/ai/chat', { message: userMessage });
+      const res = await api.post('/ai/chat', { messages: newMessages });
       const reply = res.data.data.reply;
       setMessages(prev => [...prev, { role: 'ai', content: reply }]);
     } catch (err) {

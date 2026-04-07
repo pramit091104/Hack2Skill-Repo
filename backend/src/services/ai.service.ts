@@ -32,32 +32,55 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
   
   const systemPrompt = `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.`;
   
-  const history = messages.slice(0, -1).map(m => ({
-    role: m.role === 'ai' ? 'model' : 'user',
-    parts: [{ text: m.content }]
-  }));
+  const collapsed: {role: string, content: string}[] = [];
+  let currentRole: string | null = null;
+  let currentContent = '';
   
-  const latestMessage = messages[messages.length - 1].content;
+  for (const m of messages) {
+    const role = m.role === 'ai' ? 'model' : 'user';
+    if (role === currentRole) {
+      currentContent += '\n\n' + m.content;
+    } else {
+      if (currentRole) {
+         collapsed.push({ role: currentRole, content: currentContent });
+      }
+      currentRole = role;
+      currentContent = m.content;
+    }
+  }
+  if (currentRole) {
+     collapsed.push({ role: currentRole, content: currentContent });
+  }
+
+  let latestMsg = 'Please continue.';
+  if (collapsed.length > 0 && collapsed[collapsed.length - 1].role === 'user') {
+    latestMsg = collapsed.pop()!.content;
+  }
   
-  let formattedHistory: any[] = [];
-  if (history.length > 0 && history[0].role === 'model') {
-    formattedHistory = [
-       { role: 'user', parts: [{ text: systemPrompt }] },
-       ...history
-    ];
-  } else {
-    formattedHistory = [
-       { role: 'user', parts: [{ text: systemPrompt }] },
-       { role: 'model', parts: [{ text: 'Understood. I am ready to advise.'}] },
-       ...history
-    ];
+  const history: {role: string, parts: {text: string}[]}[] = [
+    { role: 'user', parts: [{ text: systemPrompt }] },
+    { role: 'model', parts: [{ text: 'Understood. I am ready to advise.' }] }
+  ];
+  
+  if (collapsed.length > 0) {
+    if (collapsed[0].role === 'model') {
+       history[1].parts[0].text += '\n\n' + collapsed[0].content;
+       collapsed.shift();
+    }
+    
+    for (const c of collapsed) {
+       history.push({
+         role: c.role,
+         parts: [{ text: c.content }]
+       });
+    }
   }
   
   const chatSession = geminiFlash.startChat({
-    history: formattedHistory
+    history: history
   });
   
-  const result = await chatSession.sendMessage(latestMessage);
+  const result = await chatSession.sendMessage(latestMsg);
   return result.response.text();
 };
 

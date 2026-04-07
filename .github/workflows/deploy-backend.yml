@@ -8,15 +8,14 @@ on:
       - 'backend/**'
   workflow_dispatch:
 
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: us-central1
-  SERVICE: nutrismart-api
-  IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/nutrismart/api
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: us-central1
+      SERVICE: nutrismart-api
+      IMAGE: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/nutrismart/api
     permissions:
       contents: 'read'
       id-token: 'write'
