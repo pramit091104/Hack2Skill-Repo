@@ -17,6 +17,9 @@ import habitRoutes from './routes/habit.routes';
 
 const app: Express = express();
 
+// Trust Cloud Run / GCP load balancer proxy
+app.set('trust proxy', 1);
+
 // 1. Security & Standard Middlewares
 app.use(helmet());
 app.use(cors({ origin: '*' })); // Limit this to Firebase Hosting origin in production

@@ -35,7 +35,10 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
     console.warn('[chatWithAi] Could not fetch user profile:', e);
   }
 
-  const systemInstruction = `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.`;
+  const systemInstruction = {
+    role: 'system',
+    parts: [{ text: `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.` }],
+  };
 
   // Normalize roles and collapse consecutive same-role messages
   const normalized: {role: 'user' | 'model', content: string}[] = [];
@@ -73,7 +76,12 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('[chatWithAi] Gemini error:', msg);
-    throw new Error(`Gemini API error: ${msg}`);
+    const err = new Error(`Gemini API error: ${msg}`) as Error & { statusCode?: number };
+    if (msg.includes('429') || msg.includes('quota') || msg.includes('Too Many Requests')) {
+      err.statusCode = 429;
+      err.message = 'AI service is temporarily unavailable due to rate limits. Please try again in a few minutes.';
+    }
+    throw err;
   }
 };
 
