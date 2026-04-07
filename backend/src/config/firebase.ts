@@ -7,7 +7,7 @@ if (!admin.apps.length) {
       credential: admin.credential.cert(process.env.FIREBASE_SERVICE_ACCOUNT_PATH),
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET
     });
-  } else if (process.env.FIREBASE_PROJECT_ID) {
+  } else if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
     admin.initializeApp({
       credential: admin.credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
@@ -20,6 +20,7 @@ if (!admin.apps.length) {
     // Falls back to Google Application Default Credentials (e.g. running in Cloud Run)
     console.warn('No specific Firebase credentials found in env. Falling back to Application Default Credentials.');
     admin.initializeApp({
+      projectId: process.env.FIREBASE_PROJECT_ID,
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET
     });
   }
