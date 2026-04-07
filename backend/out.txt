@@ -1,4 +1,0 @@
-No specific Firebase credentials found in env. Falling back to Application Default Credentials.
-(node:13972) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)
-Error: The file at ./config/serviceAccountKey.json does not exist, or it is not a file. ENOENT: no such file or directory, lstat 'D:\Hack2Skill-Repo\backend\config'
