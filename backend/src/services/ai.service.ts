@@ -39,12 +39,22 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
   
   const latestMessage = messages[messages.length - 1].content;
   
-  const chatSession = geminiFlash.startChat({
-    history: [
+  let formattedHistory: any[] = [];
+  if (history.length > 0 && history[0].role === 'model') {
+    formattedHistory = [
+       { role: 'user', parts: [{ text: systemPrompt }] },
+       ...history
+    ];
+  } else {
+    formattedHistory = [
        { role: 'user', parts: [{ text: systemPrompt }] },
        { role: 'model', parts: [{ text: 'Understood. I am ready to advise.'}] },
        ...history
-    ]
+    ];
+  }
+  
+  const chatSession = geminiFlash.startChat({
+    history: formattedHistory
   });
   
   const result = await chatSession.sendMessage(latestMessage);
