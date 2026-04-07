@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { auth } from '../config/firebase';
 
+// Dynamically ensure the API URL has the correct /api/v1 suffix to prevent 404s
+const rawURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const baseURL = rawURL.endsWith('/api/v1') ? rawURL : `${rawURL.replace(/\/$/, '')}/api/v1`;
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
