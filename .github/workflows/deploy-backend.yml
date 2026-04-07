@@ -52,3 +52,6 @@ jobs:
           flags: '--allow-unauthenticated'
           env_vars: |-
             NODE_ENV=production
+            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+            FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
+            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
