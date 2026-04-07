@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: NutriSmart AI Backend API
+  version: 1.0.0
+  description: API Documentation for NutriSmart AI
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Server is running
+  /api/v1/users/profile:
+    get:
+      summary: Get user profile
+      responses:
+        '200':
+          description: Successful retrieval
+    put:
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated
+  /api/v1/meals:
+    post:
+      summary: Log a new meal
+      requestBody:
+        required: true
+        content:
+          application/json:
+             schema:
+               type: object
+      responses:
+        '201':
+          description: Meal created
