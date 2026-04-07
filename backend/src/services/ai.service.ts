@@ -29,58 +29,42 @@ export const analyzeMealText = async (text: string) => {
 export const chatWithAi = async (messages: {role: string, content: string}[], uid: string) => {
   const userDoc = await db.collection('users').doc(uid).get();
   const profile = userDoc.exists ? userDoc.data() : {};
-  
-  const systemPrompt = `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.`;
-  
-  const collapsed: {role: string, content: string}[] = [];
-  let currentRole: string | null = null;
-  let currentContent = '';
-  
+
+  const systemInstruction = `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.`;
+
+  // Normalize roles and collapse consecutive same-role messages
+  const normalized: {role: 'user' | 'model', content: string}[] = [];
   for (const m of messages) {
-    const role = m.role === 'ai' ? 'model' : 'user';
-    if (role === currentRole) {
-      currentContent += '\n\n' + m.content;
+    const role = m.role === 'ai' || m.role === 'model' ? 'model' : 'user';
+    if (normalized.length > 0 && normalized[normalized.length - 1].role === role) {
+      normalized[normalized.length - 1].content += '\n\n' + m.content;
     } else {
-      if (currentRole) {
-         collapsed.push({ role: currentRole, content: currentContent });
-      }
-      currentRole = role;
-      currentContent = m.content;
+      normalized.push({ role, content: m.content });
     }
-  }
-  if (currentRole) {
-     collapsed.push({ role: currentRole, content: currentContent });
   }
 
+  // Must end with a user message to send
   let latestMsg = 'Please continue.';
-  if (collapsed.length > 0 && collapsed[collapsed.length - 1].role === 'user') {
-    latestMsg = collapsed.pop()!.content;
+  if (normalized.length > 0 && normalized[normalized.length - 1].role === 'user') {
+    latestMsg = normalized.pop()!.content;
   }
-  
-  const history: {role: string, parts: {text: string}[]}[] = [
-    { role: 'user', parts: [{ text: systemPrompt }] },
-    { role: 'model', parts: [{ text: 'Understood. I am ready to advise.' }] }
-  ];
-  
-  if (collapsed.length > 0) {
-    if (collapsed[0].role === 'model') {
-       history[1].parts[0].text += '\n\n' + collapsed[0].content;
-       collapsed.shift();
-    }
-    
-    for (const c of collapsed) {
-       history.push({
-         role: c.role,
-         parts: [{ text: c.content }]
-       });
-    }
+
+  // History must start with 'user' — drop any leading model turns
+  while (normalized.length > 0 && normalized[0].role === 'model') {
+    normalized.shift();
   }
-  
-  const chatSession = geminiFlash.startChat({
-    history: history
+
+  const history = normalized.map(m => ({
+    role: m.role,
+    parts: [{ text: m.content }],
+  }));
+
+  const chatModel = geminiFlash.startChat({
+    systemInstruction,
+    history,
   });
-  
-  const result = await chatSession.sendMessage(latestMsg);
+
+  const result = await chatModel.sendMessage(latestMsg);
   return result.response.text();
 };
 
