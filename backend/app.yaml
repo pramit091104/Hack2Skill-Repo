@@ -1,0 +1,14 @@
+# Google App Engine Configuration
+runtime: nodejs20
+env: standard
+
+instance_class: F1
+
+handlers:
+  - url: /.*
+    script: auto
+    secure: always
+
+env_variables:
+  NODE_ENV: "production"
+  # Add Firebase/Gemini secrets through the console or define them here securely
