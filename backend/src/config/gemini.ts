@@ -9,5 +9,5 @@ if (!apiKey) {
 const genAI = new GoogleGenerativeAI(apiKey || 'unconfigured');
 
 // Export pre-configured models
-export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });

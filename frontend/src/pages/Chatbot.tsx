@@ -26,9 +26,13 @@ export default function Chatbot() {
       const res = await api.post('/ai/chat', { messages: newMessages });
       const reply = res.data.data.reply;
       setMessages(prev => [...prev, { role: 'ai', content: reply }]);
-    } catch (err) {
+    } catch (err: unknown) {
        console.error(err);
-       setMessages(prev => [...prev, { role: 'ai', content: "Sorry, I'm having trouble connecting right now." }]);
+       const status = (err as { response?: { status?: number } })?.response?.status;
+       const msg = status === 429
+         ? "I've hit my request limit for now. Please wait a minute and try again."
+         : "Sorry, I'm having trouble connecting right now.";
+       setMessages(prev => [...prev, { role: 'ai', content: msg }]);
     } finally {
       setLoading(false);
     }
