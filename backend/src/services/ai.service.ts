@@ -5,6 +5,25 @@ import { getMealHistory } from './meal.service';
 
 const visionClient = new vision.ImageAnnotatorClient();
 
+// Retry helper for transient Gemini errors (503, 429)
+const withRetry = async <T>(fn: () => Promise<T>, retries = 3, delayMs = 2000): Promise<T> => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      const isTransient = msg.includes('503') || msg.includes('Service Unavailable') || msg.includes('high demand');
+      if (isTransient && i < retries - 1) {
+        console.warn(`[withRetry] Transient error, retrying in ${delayMs}ms... (attempt ${i + 1}/${retries})`);
+        await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+      } else {
+        throw e;
+      }
+    }
+  }
+  throw new Error('Max retries exceeded');
+};
+
 export const analyzeMealText = async (text: string) => {
   const prompt = `
     You are an expert nutritionist AI. Analyze the following meal description: "${text}".
@@ -17,7 +36,7 @@ export const analyzeMealText = async (text: string) => {
     }
   `;
 
-  const result = await geminiFlash.generateContent(prompt);
+  const result = await withRetry(() => geminiFlash.generateContent(prompt));
   const responseText = result.response.text();
   try {
     return JSON.parse(responseText.trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
@@ -71,7 +90,7 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
 
   try {
     const chatModel = geminiFlash.startChat({ systemInstruction, history });
-    const result = await chatModel.sendMessage(latestMsg);
+    const result = await withRetry(() => chatModel.sendMessage(latestMsg));
     return result.response.text();
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -106,7 +125,7 @@ export const generateRecommendations = async (uid: string) => {
     ]
   `;
   
-  const result = await geminiPro.generateContent(prompt);
+  const result = await withRetry(() => geminiPro.generateContent(prompt));
   try {
      return JSON.parse(result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
   } catch(e) {
@@ -130,7 +149,7 @@ export const analyzeMealImage = async (gsUri: string) => {
       "nutritionSummary": { "calories": number, "protein": number, "carbs": number, "fat": number }
     }
   `;
-  const aiResult = await geminiFlash.generateContent(prompt);
+  const aiResult = await withRetry(() => geminiFlash.generateContent(prompt));
   try {
     return JSON.parse(aiResult.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
   } catch(e) {
