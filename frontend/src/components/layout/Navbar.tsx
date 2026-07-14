@@ -41,9 +41,17 @@ export const Navbar = () => {
               </button>
             </>
           ) : (
-            <Link to="/login" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
-              Sign in
-            </Link>
+            <div className="flex items-center space-x-6">
+              <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+                Log in
+              </Link>
+              <Link 
+                to="/login" 
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
+              >
+                Start for Free
+              </Link>
+            </div>
           )}
         </div>
       </div>

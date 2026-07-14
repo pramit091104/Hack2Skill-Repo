@@ -6,6 +6,7 @@ import { useAuthStore } from './store/useAuthStore';
 import { Navbar } from './components/layout/Navbar';
 
 // Lazy loading pages
+const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const FoodLogger = React.lazy(() => import('./pages/FoodLogger'));
@@ -39,10 +40,10 @@ export default function App() {
           <React.Suspense fallback={<div className="flex h-[50vh] items-center justify-center">Loading...</div>}>
             <Routes>
               {/* Public Routes */}
+              <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               
               {/* Protected Routes */}
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/log" element={<ProtectedRoute><FoodLogger /></ProtectedRoute>} />
               <Route path="/chat" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
