@@ -2,33 +2,66 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import { Float, OrbitControls } from '@react-three/drei';
 import { ArrowRight, Bot, Apple, Activity, ShieldCheck } from 'lucide-react';
 import { SEO } from '../components/SEO';
 
-// 3D Abstract Shape Component
-const AbstractShape = () => {
-  const meshRef = useRef<any>();
+// 3D Smart Apple Component (Nutrition + AI Theme)
+const SmartApple = () => {
+  const groupRef = useRef<any>();
+  const ringRef = useRef<any>();
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.2;
-      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
+    if (groupRef.current) {
+      // Gentle floating rotation
+      groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
+    }
+    if (ringRef.current) {
+      // Fast spinning data ring
+      ringRef.current.rotation.x = state.clock.getElapsedTime() * 0.5;
+      ringRef.current.rotation.y = state.clock.getElapsedTime() * 0.8;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} visible args={[1, 100, 200]} scale={2}>
-        <MeshDistortMaterial
-          color="#10b981"
-          attach="material"
-          distort={0.5}
-          speed={2}
-          roughness={0.2}
-          metalness={0.8}
-        />
-      </Sphere>
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={1.5}>
+      <group ref={groupRef}>
+        {/* Apple Body (Slightly squashed sphere) */}
+        <mesh position={[0, -0.2, 0]} scale={[1.4, 1.2, 1.4]}>
+          <sphereGeometry args={[1, 64, 64]} />
+          <meshPhysicalMaterial 
+            color="#10b981" 
+            roughness={0.1} 
+            metalness={0.3}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+          />
+        </mesh>
+        
+        {/* Apple Stem */}
+        <mesh position={[0, 1.1, 0]} rotation={[0, 0, 0.2]}>
+          <cylinderGeometry args={[0.04, 0.06, 0.6, 16]} />
+          <meshStandardMaterial color="#065f46" />
+        </mesh>
+
+        {/* Apple Leaf */}
+        <mesh position={[0.4, 1.2, 0]} rotation={[0.2, 0, -0.6]} scale={[1, 0.2, 0.5]}>
+          <sphereGeometry args={[0.4, 16, 16]} />
+          <meshStandardMaterial color="#34d399" />
+        </mesh>
+
+        {/* AI "Data Ring" orbiting the apple */}
+        <mesh ref={ringRef} position={[0, 0, 0]}>
+          <torusGeometry args={[2, 0.02, 16, 100]} />
+          <meshStandardMaterial color="#6ee7b7" emissive="#6ee7b7" emissiveIntensity={2} />
+        </mesh>
+        
+        {/* Second orbiting ring */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[2.2, 0.01, 16, 100]} />
+          <meshStandardMaterial color="#a7f3d0" emissive="#a7f3d0" emissiveIntensity={1} />
+        </mesh>
+      </group>
     </Float>
   );
 };
@@ -116,7 +149,7 @@ export default function Home() {
               <ambientLight intensity={0.5} />
               <directionalLight position={[10, 10, 5]} intensity={1.5} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} />
-              <AbstractShape />
+              <SmartApple />
               <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
             </Canvas>
           </motion.div>
