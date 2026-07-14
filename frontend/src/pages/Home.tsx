@@ -6,60 +6,73 @@ import { Float, OrbitControls } from '@react-three/drei';
 import { ArrowRight, Bot, Apple, Activity, ShieldCheck } from 'lucide-react';
 import { SEO } from '../components/SEO';
 
-// 3D Smart Apple Component (Nutrition + AI Theme)
-const SmartApple = () => {
+// 3D Futuristic Energy Bowl Component (Nutrition + AI Theme)
+const EnergyBowl = () => {
   const groupRef = useRef<any>();
-  const ringRef = useRef<any>();
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Gentle floating rotation
-      groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
-    }
-    if (ringRef.current) {
-      // Fast spinning data ring
-      ringRef.current.rotation.x = state.clock.getElapsedTime() * 0.5;
-      ringRef.current.rotation.y = state.clock.getElapsedTime() * 0.8;
+      // Gentle floating rotation for the whole bowl
+      groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1.5}>
-      <group ref={groupRef}>
-        {/* Apple Body (Slightly squashed sphere) */}
-        <mesh position={[0, -0.2, 0]} scale={[1.4, 1.2, 1.4]}>
-          <sphereGeometry args={[1, 64, 64]} />
+    <Float speed={2} rotationIntensity={0.2} floatIntensity={1}>
+      <group ref={groupRef} position={[0, -0.5, 0]}>
+        
+        {/* Glass Bowl (Bottom half of a sphere) */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI, 0, 0]}>
+          <sphereGeometry args={[1.8, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2]} />
           <meshPhysicalMaterial 
-            color="#10b981" 
-            roughness={0.1} 
-            metalness={0.3}
-            clearcoat={1}
-            clearcoatRoughness={0.1}
+            color="#ffffff" 
+            transmission={0.9} // Glass effect
+            opacity={1}
+            metalness={0.1}
+            roughness={0.1}
+            ior={1.5}
+            thickness={0.5}
+            transparent
+            side={2} // Render both inside and outside
           />
         </mesh>
+
+        {/* Floating Macronutrient Orbs */}
         
-        {/* Apple Stem */}
-        <mesh position={[0, 1.1, 0]} rotation={[0, 0, 0.2]}>
-          <cylinderGeometry args={[0.04, 0.06, 0.6, 16]} />
-          <meshStandardMaterial color="#065f46" />
-        </mesh>
+        {/* Protein (Red/Pink) */}
+        <Float speed={3} rotationIntensity={1} floatIntensity={2}>
+          <mesh position={[-0.6, 0.5, 0.4]}>
+            <sphereGeometry args={[0.3, 32, 32]} />
+            <meshStandardMaterial color="#f43f5e" emissive="#f43f5e" emissiveIntensity={0.5} />
+          </mesh>
+        </Float>
 
-        {/* Apple Leaf */}
-        <mesh position={[0.4, 1.2, 0]} rotation={[0.2, 0, -0.6]} scale={[1, 0.2, 0.5]}>
-          <sphereGeometry args={[0.4, 16, 16]} />
-          <meshStandardMaterial color="#34d399" />
-        </mesh>
+        {/* Carbs (Yellow) */}
+        <Float speed={2.5} rotationIntensity={1} floatIntensity={1.5}>
+          <mesh position={[0.5, 0.7, 0.2]}>
+            <sphereGeometry args={[0.35, 32, 32]} />
+            <meshStandardMaterial color="#fbbf24" emissive="#fbbf24" emissiveIntensity={0.5} />
+          </mesh>
+        </Float>
 
-        {/* AI "Data Ring" orbiting the apple */}
-        <mesh ref={ringRef} position={[0, 0, 0]}>
-          <torusGeometry args={[2, 0.02, 16, 100]} />
+        {/* Fats (Teal) */}
+        <Float speed={2} rotationIntensity={1.5} floatIntensity={2.5}>
+          <mesh position={[0, 0.4, -0.6]}>
+            <sphereGeometry args={[0.25, 32, 32]} />
+            <meshStandardMaterial color="#2dd4bf" emissive="#2dd4bf" emissiveIntensity={0.5} />
+          </mesh>
+        </Float>
+
+        {/* AI "Data Ring" orbiting the bowl rim */}
+        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.95, 0.02, 16, 100]} />
           <meshStandardMaterial color="#6ee7b7" emissive="#6ee7b7" emissiveIntensity={2} />
         </mesh>
         
-        {/* Second orbiting ring */}
-        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[2.2, 0.01, 16, 100]} />
-          <meshStandardMaterial color="#a7f3d0" emissive="#a7f3d0" emissiveIntensity={1} />
+        {/* Glowing base plate */}
+        <mesh position={[0, -1.8, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.8, 0.05, 16, 100]} />
+          <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={1} />
         </mesh>
       </group>
     </Float>
@@ -143,14 +156,14 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="w-full lg:w-1/2 h-[500px] lg:h-[700px] mt-12 lg:mt-0 relative"
+            className="w-full lg:w-1/2 h-[500px] lg:h-[700px] mt-12 lg:mt-0 relative z-20"
           >
-            <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+            <Canvas camera={{ position: [0, 2, 6], fov: 45 }}>
               <ambientLight intensity={0.5} />
               <directionalLight position={[10, 10, 5]} intensity={1.5} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} />
-              <SmartApple />
-              <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+              <EnergyBowl />
+              <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} maxPolarAngle={Math.PI / 2} minPolarAngle={0} />
             </Canvas>
           </motion.div>
 
