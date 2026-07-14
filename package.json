@@ -2,13 +2,16 @@
   "name": "nutrismart-ai-workspace",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "postinstall": "cd frontend && npm install && cd ../backend && npm install",
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && npm run build",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
     "build": "npm run build:frontend && npm run build:backend",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
     "dev": "npx concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
   }
 }
