@@ -1,229 +1,136 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, OrbitControls } from '@react-three/drei';
-import { ArrowRight, Bot, Apple, Activity, ShieldCheck } from 'lucide-react';
-import { SEO } from '../components/SEO';
-
-// 3D Futuristic Energy Bowl Component (Nutrition + AI Theme)
-const EnergyBowl = () => {
-  const groupRef = useRef<any>();
-
-  useFrame((state) => {
-    if (groupRef.current) {
-      // Gentle floating rotation for the whole bowl
-      groupRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
-    }
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0.2} floatIntensity={1}>
-      <group ref={groupRef} position={[0, -0.5, 0]}>
-        
-        {/* Glass Bowl (Bottom half of a sphere) */}
-        <mesh position={[0, 0, 0]} rotation={[Math.PI, 0, 0]}>
-          <sphereGeometry args={[1.8, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshPhysicalMaterial 
-            color="#ffffff" 
-            transmission={0.9} // Glass effect
-            opacity={1}
-            metalness={0.1}
-            roughness={0.1}
-            ior={1.5}
-            thickness={0.5}
-            transparent
-            side={2} // Render both inside and outside
-          />
-        </mesh>
-
-        {/* Floating Macronutrient Orbs */}
-        
-        {/* Protein (Red/Pink) */}
-        <Float speed={3} rotationIntensity={1} floatIntensity={2}>
-          <mesh position={[-0.6, 0.5, 0.4]}>
-            <sphereGeometry args={[0.3, 32, 32]} />
-            <meshStandardMaterial color="#f43f5e" emissive="#f43f5e" emissiveIntensity={0.5} />
-          </mesh>
-        </Float>
-
-        {/* Carbs (Yellow) */}
-        <Float speed={2.5} rotationIntensity={1} floatIntensity={1.5}>
-          <mesh position={[0.5, 0.7, 0.2]}>
-            <sphereGeometry args={[0.35, 32, 32]} />
-            <meshStandardMaterial color="#fbbf24" emissive="#fbbf24" emissiveIntensity={0.5} />
-          </mesh>
-        </Float>
-
-        {/* Fats (Teal) */}
-        <Float speed={2} rotationIntensity={1.5} floatIntensity={2.5}>
-          <mesh position={[0, 0.4, -0.6]}>
-            <sphereGeometry args={[0.25, 32, 32]} />
-            <meshStandardMaterial color="#2dd4bf" emissive="#2dd4bf" emissiveIntensity={0.5} />
-          </mesh>
-        </Float>
-
-        {/* AI "Data Ring" orbiting the bowl rim */}
-        <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.95, 0.02, 16, 100]} />
-          <meshStandardMaterial color="#6ee7b7" emissive="#6ee7b7" emissiveIntensity={2} />
-        </mesh>
-        
-        {/* Glowing base plate */}
-        <mesh position={[0, -1.8, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.8, 0.05, 16, 100]} />
-          <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={1} />
-        </mesh>
-      </group>
-    </Float>
-  );
-};
-
-// Feature Card Component
-const FeatureCard = ({ icon: Icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
-    viewport={{ once: true }}
-    className="p-8 rounded-2xl bg-white/50 backdrop-blur-xl border border-slate-200 shadow-xl hover:shadow-emerald-100 transition-shadow"
-  >
-    <div className="h-12 w-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6 text-emerald-600">
-      <Icon className="h-6 w-6" />
-    </div>
-    <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
-    <p className="text-slate-600 leading-relaxed">{description}</p>
-  </motion.div>
-);
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 overflow-hidden font-sans">
-      <SEO />
-
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-16">
-        {/* Background Gradients */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-200/40 blur-[100px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-200/40 blur-[100px]" />
+    <div className="bg-background text-on-surface font-body-md overflow-x-hidden min-h-screen">
+      {/* TopNavBar */}
+      <nav className="w-full sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm h-20 transition-all duration-300">
+        <div className="flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-full">
+          <div className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>nutrition</span>
+            NutriSmart AI
+          </div>
+          <div className="hidden md:flex items-center gap-lg">
+            <a className="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md hover:text-primary hover:scale-105 transition-all" href="#">Features</a>
+            <a className="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary hover:scale-105 transition-all" href="#">How it Works</a>
+            <a className="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary hover:scale-105 transition-all" href="#">Science</a>
+          </div>
+          <div className="flex items-center gap-md">
+            <Link to="/login" className="hidden lg:block text-primary font-bold font-label-md transition-all duration-200 ease-in-out active:scale-95 hover:text-secondary">Login</Link>
+            <Link to="/login" className="bg-primary text-on-primary px-lg py-sm rounded-full font-label-md shadow-lg shadow-primary/20 transition-all duration-200 ease-in-out active:scale-95 hover:scale-105">Get Started</Link>
+          </div>
         </div>
+      </nav>
 
-        <div className="container mx-auto px-4 md:px-8 flex flex-col lg:flex-row items-center justify-between">
+      <main>
+        {/* Hero Section: Split-screen */}
+        <section className="relative min-h-[90vh] flex flex-col lg:flex-row items-center overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(45,212,191,0.15)_0%,rgba(45,212,191,0)_70%)] z-0 filter blur-[40px] top-[-10%] left-[-10%]"></div>
+          <div className="absolute w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(254,208,27,0.1)_0%,rgba(254,208,27,0)_70%)] z-0 filter blur-[40px] bottom-[10%] right-[10%]"></div>
           
-          {/* Hero Content */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full lg:w-1/2 pt-12 lg:pt-0 z-10"
-          >
-            <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200 mb-6 shadow-sm">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-medium text-slate-700">NutriSmart AI is Live</span>
+          {/* Left: Typography */}
+          <div className="flex-1 w-full px-lg lg:pl-xl lg:pr-md flex flex-col justify-center py-xl z-10 animate-in slide-in-from-left-8 duration-700">
+            <div className="inline-flex items-center gap-2 bg-primary-container/10 text-on-primary-container px-md py-xs rounded-full w-fit mb-md">
+              <span className="material-symbols-outlined text-[18px]">verified</span>
+              <span className="font-label-sm uppercase tracking-wider">Next-Gen Wellness</span>
             </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6 tracking-tight">
-              Eat Smarter. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">
-                Live Better.
-              </span>
+            <h1 className="font-headline-xl text-headline-xl lg:text-[72px] lg:leading-[80px] mb-lg max-w-2xl text-on-surface">
+              AI-Powered <span className="text-primary italic">Nutrition</span>, Reimagined.
             </h1>
-            
-            <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-xl leading-relaxed">
-              Your personal AI nutrition coach. Instantly log meals with computer vision, track your macros, and build healthy habits effortlessly.
+            <p className="font-body-lg text-body-lg text-on-surface-variant mb-lg max-w-xl">
+              Stop guessing. Start thriving. Our intelligent engine analyzes your body's unique bio-rhythms to deliver a personalized nutrition experience that feels like magic.
             </p>
-            
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              <Link 
-                to="/login"
-                className="inline-flex justify-center items-center px-8 py-4 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg hover:shadow-emerald-200 transition-all transform hover:-translate-y-1"
-              >
-                Start for Free
-                <ArrowRight className="ml-2 h-5 w-5" />
+            <div className="flex flex-wrap gap-md">
+              <Link to="/login" className="bg-primary text-on-primary px-lg py-md rounded-full font-label-md flex items-center gap-2 shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+                Get Started
+                <span className="material-symbols-outlined">arrow_forward</span>
               </Link>
-              <a 
-                href="#features"
-                className="inline-flex justify-center items-center px-8 py-4 text-base font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm transition-all"
-              >
-                Learn More
-              </a>
+              <button className="bg-white text-primary border-2 border-primary/20 px-lg py-md rounded-full font-label-md transition-all hover:bg-primary/5 active:scale-95">
+                Watch Demo
+              </button>
             </div>
-          </motion.div>
-
-          {/* 3D Canvas */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="w-full lg:w-1/2 h-[500px] lg:h-[700px] mt-12 lg:mt-0 relative z-20"
-          >
-            <Canvas camera={{ position: [0, 2, 6], fov: 45 }}>
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} intensity={1.5} />
-              <pointLight position={[-10, -10, -10]} intensity={0.5} />
-              <EnergyBowl />
-              <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} maxPolarAngle={Math.PI / 2} minPolarAngle={0} />
-            </Canvas>
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-white relative z-10">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-              Everything you need to hit your goals
-            </h2>
-            <p className="text-lg text-slate-600">
-              Powered by advanced Google Gemini AI, NutriSmart takes the guesswork out of healthy eating.
-            </p>
+            <div className="mt-xl flex items-center gap-lg grayscale opacity-60">
+              <span className="font-label-sm">TRUSTED BY 200,000+ USERS</span>
+            </div>
           </div>
+          
+          {/* Right: 3D Visual */}
+          <div className="flex-1 w-full h-[500px] lg:h-screen flex items-center justify-center p-md relative overflow-visible z-10 animate-in slide-in-from-right-8 duration-1000">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-container/5 to-transparent rounded-full blur-3xl scale-75 opacity-50"></div>
+              <img alt="Abstract Health Icon" className="w-[85%] h-auto max-w-2xl object-contain z-10 transition-transform duration-700 hover:scale-105 drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD__nuZryBAE8tE4iPgMIjDccmnXIPhkUouPqIRiSg4u9CNztXzKNaCqUJPH_aHIFFn2JxvLrluC9-Y3pZYRY6f3T-V-53Qrc-2OdcA6LRabshlzKjUldCaavPmVdsWGKOMdabOHARVQcawzjXIDJ8jrKT7VJ_md4Z4JoNh1jmb5lq-bvSjfIwDkEL0DK915bIbfVNE1X0wuh2dxZfl32Yxq5Da8EgoInMaJlE7TCQ_HSdv2UeWQQsQyoXNGhlttGTeUQ5yAuGP-9AR"/>
+            </div>
+          </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard 
-              icon={Apple}
-              title="Instant Meal Logging"
-              description="Just snap a photo. Our AI identifies your food and instantly estimates calories, protein, carbs, and fats."
-              delay={0.1}
-            />
-            <FeatureCard 
-              icon={Bot}
-              title="AI Nutrition Coach"
-              description="Chat with your personal AI dietician. Ask for healthy recipes, macro adjustments, or motivation."
-              delay={0.2}
-            />
-            <FeatureCard 
-              icon={Activity}
-              title="Smart Analytics"
-              description="Visualize your progress over time. See trends in your caloric intake and macro distribution."
-              delay={0.3}
-            />
+        {/* Feature Grid Section */}
+        <section className="py-xl px-lg max-w-container-max mx-auto">
+          <div className="text-center mb-xl">
+            <h2 className="font-headline-lg text-headline-lg mb-sm">Wellness Without the Work</h2>
+            <p className="text-on-surface-variant max-w-2xl mx-auto">Our technology handles the complexity so you can focus on enjoying your meals and feeling your best.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            <div className="p-lg rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_rgba(45,212,191,0.08)] border-b-4 border-primary transition-all hover:-translate-y-2">
+              <div className="w-16 h-16 bg-primary-container/10 rounded-2xl flex items-center justify-center mb-md hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-primary text-[32px]">photo_camera</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md mb-2">Smart Photo Logging</h3>
+              <p className="text-on-surface-variant font-body-md">Snap a photo, let AI do the rest. Our neural networks identify ingredients and volumes instantly with 98% accuracy.</p>
+            </div>
+            
+            <div className="p-lg rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_rgba(45,212,191,0.08)] border-b-4 border-secondary transition-all hover:-translate-y-2">
+              <div className="w-16 h-16 bg-secondary-container/10 rounded-2xl flex items-center justify-center mb-md hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-secondary text-[32px]">biotech</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md mb-2">Precision Macros</h3>
+              <p className="text-on-surface-variant font-body-md">Scientific accuracy for every meal. Get deep insights into bio-availability and micronutrient density effortlessley.</p>
+            </div>
+            
+            <div className="p-lg rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_rgba(45,212,191,0.08)] border-b-4 border-tertiary transition-all hover:-translate-y-2">
+              <div className="w-16 h-16 bg-tertiary-container/10 rounded-2xl flex items-center justify-center mb-md hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-tertiary text-[32px]">support_agent</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md mb-2">AI Coaching</h3>
+              <p className="text-on-surface-variant font-body-md">24/7 personalized dietary guidance. Your pocket coach knows when you need a boost or when to suggest a recovery meal.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-xl bg-primary relative overflow-hidden mt-xl">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] border-[40px] border-white rounded-full"></div>
+          </div>
+          <div className="relative z-10 px-lg max-w-container-max mx-auto text-center flex flex-col items-center">
+            <h2 className="font-headline-xl text-on-primary mb-md lg:text-[56px] leading-tight">Ready to transform your health?</h2>
+            <p className="text-on-primary/80 max-w-2xl text-body-lg mb-lg">Join thousands of people who have already optimized their life with NutriSmart AI. Your journey to peak vitality starts with one tap.</p>
+            <div className="flex flex-col sm:flex-row gap-md">
+              <Link to="/login" className="bg-white text-primary px-xl py-md rounded-full font-headline-md shadow-2xl transition-all hover:scale-105 active:scale-95">Join the Revolution</Link>
+              <button className="bg-transparent border-2 border-white/40 text-on-primary px-xl py-md rounded-full font-headline-md transition-all hover:bg-white/10 active:scale-95">Explore Pricing</button>
+            </div>
+            <div className="mt-lg flex items-center gap-md text-on-primary/60 font-label-sm">
+              <span className="flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">check_circle</span> 14-day free trial</span>
+              <span className="flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]">check_circle</span> No credit card required</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-surface-container-lowest border-t border-outline-variant/10 py-lg">
+        <div className="flex flex-col md:flex-row justify-between items-center w-full px-lg max-w-container-max mx-auto">
+          <div className="mb-lg md:mb-0 text-center md:text-left">
+            <div className="font-headline-md text-headline-md font-bold text-primary mb-sm">NutriSmart AI</div>
+            <p className="font-label-sm text-on-surface-variant max-w-xs">© 2024 NutriSmart AI. Your energetic health companion.</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-lg mb-lg md:mb-0">
+            <a className="text-on-surface-variant hover:text-secondary transition-colors font-label-sm" href="#">Privacy Policy</a>
+            <a className="text-on-surface-variant hover:text-secondary transition-colors font-label-sm" href="#">Terms of Service</a>
+            <a className="text-on-surface-variant hover:text-secondary transition-colors font-label-sm" href="#">Contact Us</a>
           </div>
         </div>
-      </section>
-
-      {/* Footer / CTA */}
-      <section className="py-20 bg-slate-900 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[60%] h-full bg-emerald-600/10 rounded-l-full blur-[120px]" />
-        
-        <div className="container mx-auto px-4 md:px-8 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to transform your diet?
-          </h2>
-          <p className="text-slate-300 mb-10 max-w-2xl mx-auto">
-            Join thousands of users who have revolutionized their health with the power of artificial intelligence.
-          </p>
-          <Link 
-            to="/login"
-            className="inline-flex justify-center items-center px-8 py-4 text-base font-semibold text-slate-900 bg-emerald-400 hover:bg-emerald-300 rounded-xl shadow-lg transition-all transform hover:-translate-y-1"
-          >
-            Create Your Free Account
-          </Link>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 }

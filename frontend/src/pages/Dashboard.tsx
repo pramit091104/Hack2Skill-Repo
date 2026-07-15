@@ -56,7 +56,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full max-w-container-max mx-auto px-md pb-32 space-y-lg animate-in fade-in zoom-in duration-500">
+    <div className="w-full p-6 lg:p-8 space-y-lg animate-in fade-in zoom-in duration-500">
       
       {/* Hero Section */}
       <section className="mt-lg">
