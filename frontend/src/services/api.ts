@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { auth } from '../config/firebase';
 
-// In production (Vercel), we strictly use the relative path so it routes through Vercel.
-// We use a runtime check instead of environment variables to guarantee it works.
-const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:8000/api/v1' : '/api/v1';
+// In production (Vercel), we will configure VITE_API_URL to point to the Render backend.
+// In development, it defaults to the local backend server on port 8000.
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const api = axios.create({
   baseURL,

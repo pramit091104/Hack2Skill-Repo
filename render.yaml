@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: nutrismart-ai-backend
+    env: node
+    plan: free # Deploys to the Free Tier by default
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      # The following variables must be populated manually in the Render Dashboard
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
