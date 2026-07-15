@@ -12,6 +12,7 @@ export default function Dashboard() {
   const { user } = useAuthStore();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [waterGlasses, setWaterGlasses] = useState(0);
 
   useEffect(() => {
     api.get('/meals/history')
@@ -29,7 +30,30 @@ export default function Dashboard() {
   const fatsToday = todayMeals.reduce((s, m) => s + (m.nutritionSummary?.fat || 0), 0);
 
   const targetCalories = 2200;
+  const targetProtein = 120;
+  const targetCarbs = 250;
+  const targetFats = 70;
+
   const calPercent = Math.min((caloriesToday / targetCalories) * 100, 100);
+
+  // Dynamic Suggestion based on time
+  const currentHour = new Date().getHours();
+  let suggestion = { title: "Avocado Toast", type: "Breakfast", img: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&q=80&w=2072" };
+  if (currentHour >= 11 && currentHour <= 15) {
+    suggestion = { title: "Quinoa Power Bowl", type: "Lunch", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=2070" };
+  } else if (currentHour > 15 && currentHour <= 18) {
+    suggestion = { title: "Greek Yogurt & Berries", type: "Snack", img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=1974" };
+  } else if (currentHour > 18) {
+    suggestion = { title: "Grilled Salmon Asparagus", type: "Dinner", img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&q=80&w=1974" };
+  }
+
+  const handleWaterToggle = (index: number) => {
+    if (waterGlasses === index + 1) {
+      setWaterGlasses(index); // Deselect
+    } else {
+      setWaterGlasses(index + 1);
+    }
+  };
 
   return (
     <div className="w-full max-w-container-max mx-auto px-md pb-32 space-y-lg animate-in fade-in zoom-in duration-500">
@@ -42,108 +66,117 @@ export default function Dashboard() {
               Great morning, {user?.email?.split('@')[0] || 'Alex'}! 🌟
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              You're {Math.round(calPercent)}% to your daily goal.
+              You're {Math.round(calPercent)}% to your daily calorie goal.
             </p>
           </div>
           {/* Abstract decorative element */}
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-primary-container/20 rounded-full blur-2xl"></div>
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-primary-container/20 rounded-full blur-2xl lg:w-64 lg:h-64"></div>
         </div>
       </section>
 
-      {/* Main Calorie Card (Bento Pattern) */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        <div className="bg-surface-container-lowest p-lg rounded-lg ambient-glow flex flex-col items-center justify-center text-center space-y-md border border-outline-variant/10">
-          <div className="relative w-40 h-40">
-            <svg className="w-full h-full -rotate-90 origin-center">
-              <circle className="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeWidth="12"></circle>
-              <circle 
-                className="text-primary-container transition-all duration-1000 ease-out" 
-                cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" 
-                strokeDasharray="440" 
-                strokeDashoffset={440 - (440 * calPercent) / 100} 
-                strokeLinecap="round" strokeWidth="12">
-              </circle>
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-headline-lg text-headline-lg text-primary">{loading ? '...' : caloriesToday}</span>
-              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">kcal</span>
-            </div>
-          </div>
-          <div>
-            <h3 className="font-headline-md text-headline-md text-on-surface">Daily Calorie Goal</h3>
-            <p className="font-body-md text-body-md text-outline">Target: {targetCalories} kcal</p>
-          </div>
-        </div>
-
-        {/* Side Bento Column */}
-        <div className="flex flex-col gap-md">
-          {/* Activity/Water Card */}
-          <div className="bg-surface p-md rounded-lg ambient-glow border border-outline-variant/10 flex-1 flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-label-md text-label-md text-on-surface-variant">Hydration</h4>
-                <p className="font-headline-md text-headline-md text-primary">5/8 glasses</p>
-              </div>
-              <span className="material-symbols-outlined text-primary-container text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>water_drop</span>
-            </div>
-            <div className="flex gap-2 mt-sm flex-wrap">
-              {[1,2,3,4,5].map(i => (
-                <div key={i} className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-sm text-white">check</span>
+      {/* Main Grid for Desktop (Bento Pattern) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+        
+        {/* Left Column: Calories & Water */}
+        <div className="lg:col-span-2 flex flex-col gap-md">
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-md flex-1">
+            
+            <div className="bg-surface-container-lowest p-lg rounded-lg ambient-glow flex flex-col items-center justify-center text-center space-y-md border border-outline-variant/10">
+              <div className="relative w-40 h-40">
+                <svg className="w-full h-full -rotate-90 origin-center">
+                  <circle className="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeWidth="12"></circle>
+                  <circle 
+                    className="text-primary-container transition-all duration-1000 ease-out" 
+                    cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" 
+                    strokeDasharray="440" 
+                    strokeDashoffset={440 - (440 * calPercent) / 100} 
+                    strokeLinecap="round" strokeWidth="12">
+                  </circle>
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="font-headline-lg text-headline-lg text-primary">{loading ? '...' : caloriesToday}</span>
+                  <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">kcal</span>
                 </div>
-              ))}
-              {[1,2,3].map(i => (
-                <div key={`e-${i}`} className="w-8 h-8 rounded-full bg-surface-container-high"></div>
-              ))}
+              </div>
+              <div>
+                <h3 className="font-headline-md text-headline-md text-on-surface">Daily Calorie Goal</h3>
+                <p className="font-body-md text-body-md text-outline">Target: {targetCalories} kcal</p>
+              </div>
             </div>
-          </div>
 
-          {/* Add Log quick action */}
-          <button className="w-full py-md px-lg bg-tertiary-container rounded-lg text-on-tertiary-container font-label-md flex items-center justify-center gap-sm squishy-btn transition-all ambient-glow">
-            <span className="material-symbols-outlined">add_circle</span>
-            Log Today's Lunch
-          </button>
-        </div>
-      </section>
+            <div className="flex flex-col gap-md">
+              <div className="bg-surface p-md rounded-lg ambient-glow border border-outline-variant/10 flex-1 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-label-md text-label-md text-on-surface-variant">Hydration</h4>
+                    <p className="font-headline-md text-headline-md text-primary">{waterGlasses}/8 glasses</p>
+                  </div>
+                  <span className="material-symbols-outlined text-primary-container text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>water_drop</span>
+                </div>
+                <div className="flex gap-2 mt-sm flex-wrap">
+                  {[0,1,2,3,4,5,6,7].map(i => (
+                    <button 
+                      key={i} 
+                      onClick={() => handleWaterToggle(i)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 ${
+                        i < waterGlasses ? 'bg-primary-container shadow-md' : 'bg-surface-container-high'
+                      }`}
+                    >
+                      {i < waterGlasses && <span className="material-symbols-outlined text-sm text-white">check</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-      {/* Macronutrient Section */}
-      <section className="space-y-md">
-        <h3 className="font-headline-md text-headline-md text-on-surface px-xs">Macronutrients</h3>
-        <div className="grid grid-cols-3 gap-sm">
-          {/* Protein */}
-          <MacroCard title="Protein" amount={Math.round(proteinToday)} color="text-primary-container" labelColor="text-primary" percentage={60} />
-          {/* Carbs */}
-          <MacroCard title="Carbs" amount={Math.round(carbsToday)} color="text-secondary-container" labelColor="text-secondary" percentage={45} />
-          {/* Fats */}
-          <MacroCard title="Fats" amount={Math.round(fatsToday)} color="text-tertiary-container" labelColor="text-tertiary" percentage={30} />
-        </div>
-      </section>
-
-      {/* Insights / Food Recommendation */}
-      <section className="space-y-md">
-        <h3 className="font-headline-md text-headline-md text-on-surface px-xs">Daily Suggestion</h3>
-        <div className="relative group rounded-lg overflow-hidden h-48 ambient-glow cursor-pointer">
-          <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-               style={{ backgroundImage: "url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop')" }}>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 p-md glass-card flex justify-between items-center">
-            <div>
-              <p className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">Recommended Lunch</p>
-              <h4 className="font-headline-md text-headline-md text-on-surface">Quinoa Power Bowl</h4>
+              <button className="w-full py-md px-lg bg-tertiary-container rounded-lg text-on-tertiary-container font-label-md flex items-center justify-center gap-sm squishy-btn transition-all ambient-glow">
+                <span className="material-symbols-outlined">add_circle</span>
+                Log a Meal
+              </button>
             </div>
-            <button className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center squishy-btn">
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
-          </div>
+          </section>
+
+          {/* Macronutrient Section spanning the left column bottom */}
+          <section className="space-y-md">
+            <h3 className="font-headline-md text-headline-md text-on-surface px-xs">Macronutrients</h3>
+            <div className="grid grid-cols-3 gap-sm">
+              <MacroCard title="Protein" amount={Math.round(proteinToday)} target={targetProtein} color="text-primary-container" labelColor="text-primary" />
+              <MacroCard title="Carbs" amount={Math.round(carbsToday)} target={targetCarbs} color="text-secondary-container" labelColor="text-secondary" />
+              <MacroCard title="Fats" amount={Math.round(fatsToday)} target={targetFats} color="text-tertiary-container" labelColor="text-tertiary" />
+            </div>
+          </section>
         </div>
-      </section>
+
+        {/* Right Column: Suggestions & Extra Insights */}
+        <div className="flex flex-col gap-lg">
+          <section className="space-y-md h-full flex flex-col">
+            <h3 className="font-headline-md text-headline-md text-on-surface px-xs">Daily Suggestion</h3>
+            <div className="relative group rounded-lg overflow-hidden flex-1 min-h-[250px] ambient-glow cursor-pointer">
+              <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+                   style={{ backgroundImage: `url('${suggestion.img}')` }}>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-md glass-card flex justify-between items-center m-2 rounded-lg">
+                <div>
+                  <p className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">Recommended {suggestion.type}</p>
+                  <h4 className="font-headline-md text-headline-md text-on-surface">{suggestion.title}</h4>
+                </div>
+                <button className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center squishy-btn shrink-0">
+                  <span className="material-symbols-outlined">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </div>
     </div>
   );
 }
 
-function MacroCard({ title, amount, color, labelColor, percentage }: { title: string, amount: number, color: string, labelColor: string, percentage: number }) {
+function MacroCard({ title, amount, target, color, labelColor }: { title: string, amount: number, target: number, color: string, labelColor: string }) {
   const radius = 25;
   const circumference = 2 * Math.PI * radius;
+  
+  const percentage = Math.min((amount / target) * 100, 100);
   const offset = circumference - (percentage / 100) * circumference;
 
   return (
@@ -159,10 +192,10 @@ function MacroCard({ title, amount, color, labelColor, percentage }: { title: st
             strokeLinecap="round" strokeWidth="6">
           </circle>
         </svg>
-        <div className="absolute inset-0 flex items-center justify-center font-label-sm text-xs">{percentage}%</div>
+        <div className="absolute inset-0 flex items-center justify-center font-label-sm text-xs">{Math.round(percentage)}%</div>
       </div>
       <span className="font-label-md text-label-md text-on-surface-variant">{title}</span>
-      <span className={`font-body-md text-body-md font-bold ${labelColor}`}>{amount}g</span>
+      <span className={`font-body-md text-body-md font-bold ${labelColor}`}>{amount}g <span className="text-xs text-outline font-normal">/ {target}g</span></span>
     </div>
   );
 }

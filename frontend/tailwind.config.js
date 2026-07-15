@@ -68,7 +68,8 @@ export default {
         "md": "20px",
         "chat-gap": "12px",
         "sm": "12px",
-        "container-max": "600px",
+        "container-max": "1200px",
+        "container-chat": "800px",
         "base": "8px"
       },
       fontFamily: {

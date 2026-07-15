@@ -59,7 +59,7 @@ export default function Chatbot() {
     <div className="bg-background min-h-[calc(100vh-64px)] flex flex-col items-center animate-in slide-in-from-bottom-4 duration-500">
       
       {/* TopAppBar */}
-      <header className="sticky top-0 w-full z-10 flex items-center px-md py-sm max-w-container-max mx-auto bg-surface/80 backdrop-blur-md shadow-sm">
+      <header className="sticky top-0 w-full z-10 flex items-center px-md py-sm max-w-container-chat mx-auto bg-surface/80 backdrop-blur-md shadow-sm">
         <div className="flex items-center gap-sm">
           <div className="relative">
             <div className="w-12 h-12 rounded-full border-2 border-primary-container bg-primary flex items-center justify-center text-white">
@@ -83,7 +83,7 @@ export default function Chatbot() {
       </header>
 
       {/* Main Content Canvas */}
-      <main ref={mainRef} className="flex-1 w-full max-w-container-max pt-4 pb-48 px-md flex flex-col gap-chat-gap overflow-y-auto scroll-smooth">
+      <main ref={mainRef} className="flex-1 w-full max-w-container-chat mx-auto pt-4 pb-48 px-md flex flex-col gap-chat-gap overflow-y-auto scroll-smooth">
         {messages.map((msg, i) => (
           <div key={i} className={`flex items-end gap-base max-w-[85%] ${msg.role === 'user' ? 'self-end' : 'self-start'}`}>
             <div className={`p-md rounded-lg font-body-md text-body-md whitespace-pre-wrap ${
@@ -108,7 +108,7 @@ export default function Chatbot() {
       </main>
 
       {/* Interactive Footer Section */}
-      <div className="fixed bottom-0 w-full max-w-container-max z-40 px-md pb-md flex flex-col gap-sm bg-gradient-to-t from-background via-background to-transparent pt-8">
+      <div className="fixed bottom-0 w-full max-w-container-chat mx-auto z-40 px-md pb-md flex flex-col gap-sm bg-gradient-to-t from-background via-background to-transparent pt-8">
         
         {/* Quick Suggestions Chips */}
         <div className="flex gap-base overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
