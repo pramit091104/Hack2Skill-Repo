@@ -111,7 +111,7 @@ export default function Home() {
             </div>
             <div className="mt-lg flex items-center gap-md text-on-primary/60 font-label-sm">
               <span className="flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">check_circle</span> 14-day free trial</span>
-              <span className="flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]">check_circle</span> No credit card required</span>
+              <span className="flex items-center gap-xs"><span className="material-symbols-outlined text-[16px]">check_circle</span> No credit card required</span>
             </div>
           </div>
         </section>

@@ -6,6 +6,7 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    {/* @ts-expect-error type incompatibility */}
     <HelmetProvider>
       <App />
     </HelmetProvider>
