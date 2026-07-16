@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../services/api';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Meal {
   id: string;
@@ -10,18 +11,27 @@ interface Meal {
 
 export default function Dashboard() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [waterGlasses, setWaterGlasses] = useState(0);
+  
+  // Get today's date string for local storage key
+  const todayStr = new Date().toDateString();
+  const waterKey = `water_${todayStr}`;
+  const [waterGlasses, setWaterGlasses] = useState(parseInt(localStorage.getItem(waterKey) || '0', 10));
+
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    api.get('/meals/history')
-      .then(res => setMeals(res.data.data || []))
-      .catch(() => setMeals([]))
-      .finally(() => setLoading(false));
+    Promise.all([
+      api.get('/meals/history').catch(() => ({ data: { data: [] } })),
+      api.get('/users/profile').catch(() => ({ data: { data: null } }))
+    ]).then(([mealsRes, profileRes]) => {
+      setMeals(mealsRes.data.data || []);
+      setProfile(profileRes.data.data);
+    }).finally(() => setLoading(false));
   }, []);
 
-  const todayStr = new Date().toDateString();
   const todayMeals = meals.filter(m => new Date(m.timestamp).toDateString() === todayStr);
 
   const caloriesToday = todayMeals.reduce((s, m) => s + (m.nutritionSummary?.calories || 0), 0);
@@ -29,10 +39,10 @@ export default function Dashboard() {
   const carbsToday = todayMeals.reduce((s, m) => s + (m.nutritionSummary?.carbs || 0), 0);
   const fatsToday = todayMeals.reduce((s, m) => s + (m.nutritionSummary?.fat || 0), 0);
 
-  const targetCalories = 2200;
-  const targetProtein = 120;
-  const targetCarbs = 250;
-  const targetFats = 70;
+  const targetCalories = profile?.goals?.targetCalories || 2200;
+  const targetProtein = profile?.goals?.targetProtein || 120;
+  const targetCarbs = profile?.goals?.targetCarbs || 250;
+  const targetFats = profile?.goals?.targetFats || 70;
 
   const calPercent = Math.min((caloriesToday / targetCalories) * 100, 100);
 
@@ -48,11 +58,14 @@ export default function Dashboard() {
   }
 
   const handleWaterToggle = (index: number) => {
+    let newCount = waterGlasses;
     if (waterGlasses === index + 1) {
-      setWaterGlasses(index); // Deselect
+      newCount = index; // Deselect
     } else {
-      setWaterGlasses(index + 1);
+      newCount = index + 1;
     }
+    setWaterGlasses(newCount);
+    localStorage.setItem(waterKey, newCount.toString());
   };
 
   return (
@@ -128,10 +141,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <button className="w-full py-md px-lg bg-tertiary-container rounded-lg text-on-tertiary-container font-label-md flex items-center justify-center gap-sm squishy-btn transition-all ambient-glow">
+              <Link to="/food-logger" className="w-full py-md px-lg bg-tertiary-container rounded-lg text-on-tertiary-container font-label-md flex items-center justify-center gap-sm squishy-btn transition-all ambient-glow">
                 <span className="material-symbols-outlined">add_circle</span>
                 Log a Meal
-              </button>
+              </Link>
             </div>
           </section>
 
@@ -150,7 +163,7 @@ export default function Dashboard() {
         <div className="flex flex-col gap-lg">
           <section className="space-y-md h-full flex flex-col">
             <h3 className="font-headline-md text-headline-md text-on-surface px-xs">Daily Suggestion</h3>
-            <div className="relative group rounded-lg overflow-hidden flex-1 min-h-[250px] ambient-glow cursor-pointer">
+            <div onClick={() => navigate('/food-logger')} className="relative group rounded-lg overflow-hidden flex-1 min-h-[250px] ambient-glow cursor-pointer">
               <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
                    style={{ backgroundImage: `url('${suggestion.img}')` }}>
               </div>
@@ -159,9 +172,9 @@ export default function Dashboard() {
                   <p className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">Recommended {suggestion.type}</p>
                   <h4 className="font-headline-md text-headline-md text-on-surface">{suggestion.title}</h4>
                 </div>
-                <button className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center squishy-btn shrink-0">
+                <div className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center squishy-btn shrink-0">
                   <span className="material-symbols-outlined">chevron_right</span>
-                </button>
+                </div>
               </div>
             </div>
           </section>
