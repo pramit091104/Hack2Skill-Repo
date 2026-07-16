@@ -55,11 +55,51 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Right: 3D Visual */}
-          <div className="flex-1 w-full h-[500px] lg:h-screen flex items-center justify-center p-md relative overflow-visible z-10 animate-in slide-in-from-right-8 duration-1000">
-            <div className="relative w-full h-full flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary-container/5 to-transparent rounded-full blur-3xl scale-75 opacity-50"></div>
-              <img alt="Abstract Health Icon" className="w-[85%] h-auto max-w-2xl object-contain z-10 transition-transform duration-700 hover:scale-105 drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD__nuZryBAE8tE4iPgMIjDccmnXIPhkUouPqIRiSg4u9CNztXzKNaCqUJPH_aHIFFn2JxvLrluC9-Y3pZYRY6f3T-V-53Qrc-2OdcA6LRabshlzKjUldCaavPmVdsWGKOMdabOHARVQcawzjXIDJ8jrKT7VJ_md4Z4JoNh1jmb5lq-bvSjfIwDkEL0DK915bIbfVNE1X0wuh2dxZfl32Yxq5Da8EgoInMaJlE7TCQ_HSdv2UeWQQsQyoXNGhlttGTeUQ5yAuGP-9AR"/>
+          {/* Right: Interactive UI Collage */}
+          <div className="flex-1 w-full h-[600px] lg:h-screen flex items-center justify-center p-md relative overflow-visible z-10 animate-in slide-in-from-right-8 duration-1000">
+            <div className="relative w-full max-w-lg aspect-[4/5] flex items-center justify-center mt-12 lg:mt-0">
+              {/* Background Glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-transparent rounded-full blur-3xl scale-75 opacity-60"></div>
+              
+              {/* Base Person Image */}
+              <img 
+                src="/images/hero_person.png" 
+                alt="Healthy Lifestyle" 
+                className="absolute bottom-0 w-full h-[90%] object-contain object-bottom z-10 drop-shadow-2xl"
+              />
+
+              {/* Floating Scanner Card */}
+              <div className="absolute -left-4 lg:-left-20 top-12 w-48 sm:w-64 h-64 sm:h-72 bg-white/70 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-[0_20px_40px_rgba(0,107,95,0.15)] z-20 overflow-hidden flex flex-col p-4 animate-float group cursor-pointer">
+                <div className="flex justify-between items-center mb-2 px-2">
+                  <span className="font-label-sm text-on-surface font-bold">Analyze...</span>
+                  <span className="material-symbols-outlined text-primary text-[18px]">document_scanner</span>
+                </div>
+                
+                <div className="relative flex-1 rounded-xl overflow-hidden bg-surface-container-lowest">
+                  {/* Salad Image */}
+                  <img src="/images/hero_salad.png" alt="Food scanning" className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700" />
+                  
+                  {/* Crosshairs */}
+                  <div className="absolute inset-2 border-2 border-primary/50 opacity-50 z-10">
+                    <div className="absolute -top-[2px] -left-[2px] w-4 h-4 border-t-4 border-l-4 border-primary"></div>
+                    <div className="absolute -top-[2px] -right-[2px] w-4 h-4 border-t-4 border-r-4 border-primary"></div>
+                    <div className="absolute -bottom-[2px] -left-[2px] w-4 h-4 border-b-4 border-l-4 border-primary"></div>
+                    <div className="absolute -bottom-[2px] -right-[2px] w-4 h-4 border-b-4 border-r-4 border-primary"></div>
+                  </div>
+                  
+                  {/* Scanning Line Animation */}
+                  <div className="absolute left-0 right-0 h-[2px] bg-primary shadow-[0_0_8px_2px_rgba(0,107,95,0.6)] z-20 animate-scan"></div>
+                </div>
+              </div>
+
+              {/* Floating Calorie Badge */}
+              <div className="absolute -right-2 lg:-right-12 bottom-32 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-30 animate-float" style={{ animationDelay: '1s' }}>
+                <img src="/images/hero_salad.png" className="w-10 h-10 rounded-full object-cover border-2 border-primary-container" alt="Salad" />
+                <div>
+                  <p className="font-label-sm font-bold text-on-surface leading-tight">Superfood Bowl</p>
+                  <p className="font-label-sm text-primary">320 kcal</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>

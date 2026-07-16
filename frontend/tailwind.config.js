@@ -89,6 +89,20 @@ export default {
         "headline-lg-mobile": ["26px", {"lineHeight": "32px", "fontWeight": "700"}],
         "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
         "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+      },
+      keyframes: {
+        scan: {
+          '0%, 100%': { top: '5%' },
+          '50%': { top: '95%' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        }
+      },
+      animation: {
+        scan: 'scan 3s ease-in-out infinite',
+        float: 'float 4s ease-in-out infinite',
       }
     },
   },
