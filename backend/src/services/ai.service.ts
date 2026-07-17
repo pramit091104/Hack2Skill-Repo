@@ -131,9 +131,9 @@ export const generateRecommendations = async (uid: string) => {
 };
 
 export const analyzeMealImage = async (base64Image: string) => {
-  const match = base64Image.match(/^data:(image\/\w+);base64,/);
+  const match = base64Image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
   const mimeType = match ? match[1] : 'image/jpeg';
-  const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+  const base64Data = base64Image.includes(',') ? base64Image.split(',')[1] : base64Image;
 
   const prompt = `
     You are an expert nutritionist AI. Analyze the provided image of a meal.
