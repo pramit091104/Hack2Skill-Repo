@@ -3,7 +3,7 @@ import { api } from '../services/api';
 
 export default function Chatbot() {
   const [messages, setMessages] = useState<{role: 'ai'|'user', content: string}[]>([
-    { role: 'ai', content: "Good morning! ☀️ Ready to start our healthy journey today? Have you had your breakfast yet?" }
+    { role: 'ai', content: "Good morning! ☀️ I'm your NutriSmart AI Assistant. How can I help you optimize your health today?" }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,100 +49,98 @@ export default function Chatbot() {
   };
 
   const quickReplies = [
-    "Logged my breakfast",
-    "Need snack ideas",
-    "How's my protein?",
-    "Check water intake"
+    "What should I eat for lunch?",
+    "Suggest a high-protein snack",
+    "How's my daily progress?",
+    "Explain my macros"
   ];
 
   return (
-    <div className="bg-background min-h-[calc(100vh-64px)] flex flex-col items-center animate-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col h-[calc(100vh-80px)] max-w-[1200px] mx-auto px-margin-page py-6">
       
-      {/* TopAppBar */}
-      <header className="sticky top-0 w-full z-10 flex items-center px-md py-sm max-w-container-chat mx-auto bg-surface/80 backdrop-blur-md shadow-sm">
-        <div className="flex items-center gap-sm">
-          <div className="relative">
-            <div className="w-12 h-12 rounded-full border-2 border-primary-container bg-primary flex items-center justify-center text-white">
-              <span className="material-symbols-outlined">psychiatry</span>
-            </div>
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-white"></span>
-          </div>
-          <div className="flex flex-col">
-            <h1 className="font-headline-md text-headline-md font-bold text-primary">AI Dietician</h1>
-            <span className="font-label-sm text-label-sm text-primary flex items-center gap-1">
-              <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-              Active Now
-            </span>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6 pb-4 border-b border-border-subtle shrink-0">
+        <div className="w-14 h-14 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+          <span className="material-symbols-outlined text-3xl">psychiatry</span>
+        </div>
+        <div>
+          <h1 className="font-headline-sm text-2xl font-medium text-text-primary">AI Dietician</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+            <span className="font-label-sm text-text-secondary">Always Online</span>
           </div>
         </div>
-        <div className="ml-auto flex items-center gap-base">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
-            <span className="material-symbols-outlined">more_vert</span>
-          </button>
-        </div>
-      </header>
+      </div>
 
-      {/* Main Content Canvas */}
-      <main ref={mainRef} className="flex-1 w-full max-w-container-chat mx-auto pt-4 pb-48 px-md flex flex-col gap-chat-gap overflow-y-auto scroll-smooth">
+      {/* Main Chat Area */}
+      <main ref={mainRef} className="flex-1 overflow-y-auto px-4 scroll-smooth flex flex-col gap-6 pb-6" style={{ scrollbarWidth: 'thin' }}>
         {messages.map((msg, i) => (
-          <div key={i} className={`flex items-end gap-base max-w-[85%] ${msg.role === 'user' ? 'self-end' : 'self-start'}`}>
-            <div className={`p-md rounded-lg font-body-md text-body-md whitespace-pre-wrap ${
+          <div key={i} className={`flex max-w-[80%] ${msg.role === 'user' ? 'self-end justify-end' : 'self-start justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+            
+            {msg.role === 'ai' && (
+              <div className="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary shrink-0 mr-3 mt-auto">
+                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+              </div>
+            )}
+            
+            <div className={`p-4 rounded-2xl font-body-md text-lg leading-relaxed shadow-sm ${
               msg.role === 'user'
-                ? 'bg-tertiary text-on-tertiary rounded-br-none shadow-[0_4px_20px_rgba(169,51,73,0.08)]'
-                : 'bg-primary-container text-on-primary-container rounded-bl-none shadow-[0_4px_20px_rgba(45,212,191,0.08)]'
+                ? 'bg-surface border border-border-subtle text-text-primary rounded-br-sm'
+                : 'bg-primary-container/10 text-text-primary rounded-bl-sm border border-primary/10'
             }`}>
               {msg.content}
             </div>
+            
+            {msg.role === 'user' && (
+              <div className="w-10 h-10 rounded-full bg-surface border border-border-subtle flex items-center justify-center text-text-secondary shrink-0 ml-3 mt-auto">
+                <span className="material-symbols-outlined text-[20px]">person</span>
+              </div>
+            )}
           </div>
         ))}
         
         {loading && (
-          <div className="flex items-end gap-base max-w-[85%] self-start">
-            <div className="bg-primary-container text-on-primary-container p-md rounded-lg rounded-bl-none flex gap-1">
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+          <div className="flex max-w-[80%] self-start animate-in fade-in duration-300">
+             <div className="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary shrink-0 mr-3 mt-auto">
+                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+              </div>
+            <div className="bg-primary-container/10 border border-primary/10 p-4 rounded-2xl rounded-bl-sm flex items-center gap-2 h-14">
+              <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" />
+              <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+              <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
             </div>
           </div>
         )}
       </main>
 
-      {/* Interactive Footer Section */}
-      <div className="fixed bottom-0 w-full max-w-container-chat mx-auto z-40 px-md pb-24 lg:pb-md flex flex-col gap-sm bg-gradient-to-t from-background via-background to-transparent pt-8">
-        
-        {/* Quick Suggestions Chips */}
-        <div className="flex gap-base overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+      {/* Interactive Footer */}
+      <div className="shrink-0 pt-4 mt-auto">
+        <div className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
           {quickReplies.map((reply, idx) => (
             <button 
               key={idx}
               onClick={() => sendMessage(reply)}
               disabled={loading}
-              className="whitespace-nowrap px-md py-xs bg-white border border-primary/20 rounded-full font-label-sm text-primary shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:bg-primary/5 transition-colors active:scale-95"
+              className="whitespace-nowrap px-4 py-2 bg-white border border-border-subtle rounded-full font-label-md text-text-secondary hover:text-primary hover:border-primary/50 transition-colors active:scale-95 disabled:opacity-50"
             >
               {reply}
             </button>
           ))}
         </div>
         
-        {/* Input Bar Container */}
-        <form onSubmit={handleFormSubmit} className="flex items-center gap-sm bg-white p-xs rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-surface-container-high relative">
-          <button type="button" className="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:bg-primary/10 transition-colors">
-            <span className="material-symbols-outlined">add_box</span>
-          </button>
-          
+        <form onSubmit={handleFormSubmit} className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-border-subtle shadow-sm focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
           <input 
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface font-body-md py-2 px-2 outline-none" 
-            placeholder="Type a message..." 
+            className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-3 px-4 outline-none placeholder:text-text-secondary" 
+            placeholder="Ask about your diet..." 
             type="text"
             disabled={loading}
           />
-          
           <button 
             type="submit" 
             disabled={!input.trim() || loading}
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary active:scale-90 transition-transform shadow-lg disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary text-white hover:opacity-90 active:scale-95 transition-all shadow-sm disabled:opacity-50"
           >
             <span className="material-symbols-outlined">send</span>
           </button>

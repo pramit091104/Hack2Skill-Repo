@@ -75,77 +75,76 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary-container border-t-primary rounded-full animate-spin"></div>
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 lg:p-8 space-y-lg animate-in fade-in zoom-in duration-500">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-[1200px] mx-auto px-margin-page py-stack-md min-h-screen">
+      <div className="mb-8 mt-8 border-b border-border-subtle pb-6 flex justify-between items-end">
         <div>
-          <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Settings</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">Manage your account and goals</p>
+          <h1 className="font-headline-lg text-4xl text-text-primary tracking-tight mb-2">Settings</h1>
+          <p className="font-body-md text-text-secondary text-lg">Manage your personal details and dietary targets.</p>
         </div>
+        <button 
+          onClick={handleSignOut}
+          className="px-6 py-2 border border-error/50 text-error rounded font-button text-sm hover:bg-error/5 transition-colors"
+        >
+          Sign Out
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        {/* Left Column: Profile & Preferences */}
-        <div className="lg:col-span-5 space-y-6 lg:space-y-8">
-          <div className="bg-surface-container-lowest p-md lg:p-lg rounded-2xl shadow-[0_4px_20px_rgba(45,212,191,0.08)] border border-primary/20 space-y-md">
-            <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-2">Profile Information</h2>
-            <div className="space-y-sm">
+        {/* Left Column: Profile */}
+        <div className="lg:col-span-5 space-y-8">
+          <div className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-6">
+            <h2 className="font-headline-sm text-xl text-text-primary font-medium">Profile Information</h2>
+            
+            <div className="space-y-5">
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Email Address (Read-only)</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Email Address</label>
                 <input 
                   type="text" 
                   disabled 
                   value={auth.currentUser?.email || ''} 
-                  className="w-full p-3 bg-surface-container/50 border border-outline-variant/30 rounded-lg text-outline cursor-not-allowed" 
+                  className="w-full p-3 bg-surface border border-border-input rounded-md text-text-secondary cursor-not-allowed outline-none" 
                 />
               </div>
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Display Name</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Display Name</label>
                 <input 
                   type="text" 
                   value={displayName} 
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full p-3 bg-white border border-outline-variant/50 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-all" 
+                  className="w-full p-3 bg-white border border-border-input rounded-md text-text-primary focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                   placeholder="Your Name"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-surface-container-lowest p-md lg:p-lg rounded-2xl shadow-[0_4px_20px_rgba(45,212,191,0.08)] border border-primary/20 space-y-md">
-            <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-2">App Preferences</h2>
+          <div className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-6">
+            <h2 className="font-headline-sm text-xl text-text-primary font-medium">Preferences</h2>
+            
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-b border-border-subtle pb-4">
                 <div>
-                  <p className="font-label-lg text-on-surface">Push Notifications</p>
-                  <p className="font-body-sm text-outline text-xs">Receive daily logging reminders</p>
+                  <p className="font-label-md text-text-primary font-medium">Push Notifications</p>
+                  <p className="font-body-sm text-text-secondary text-sm mt-1">Receive daily logging reminders</p>
                 </div>
-                <div className="w-12 h-6 bg-primary rounded-full relative cursor-pointer shadow-inner">
+                <div className="w-11 h-6 bg-primary rounded-full relative cursor-pointer shadow-inner">
                   <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
                 </div>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pt-2">
                 <div>
-                  <p className="font-label-lg text-on-surface">Weekly Report</p>
-                  <p className="font-body-sm text-outline text-xs">Email summary of nutrition trends</p>
+                  <p className="font-label-md text-text-primary font-medium">Weekly Report</p>
+                  <p className="font-body-sm text-text-secondary text-sm mt-1">Email summary of nutrition trends</p>
                 </div>
-                <div className="w-12 h-6 bg-surface-container-high rounded-full relative cursor-pointer shadow-inner">
-                  <div className="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full"></div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-label-lg text-on-surface">Dark Mode</p>
-                  <p className="font-body-sm text-outline text-xs">Switch to a darker theme</p>
-                </div>
-                <div className="w-12 h-6 bg-surface-container-high rounded-full relative cursor-pointer shadow-inner">
+                <div className="w-11 h-6 bg-surface-container-high border border-border-input rounded-full relative cursor-pointer shadow-inner">
                   <div className="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full"></div>
                 </div>
               </div>
@@ -153,79 +152,68 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Right Column: Goals & Danger Zone */}
-        <div className="lg:col-span-7 space-y-6 lg:space-y-8">
-          <form onSubmit={handleSave} className="bg-surface-container-lowest p-md lg:p-lg rounded-2xl shadow-[0_4px_20px_rgba(45,212,191,0.08)] border border-primary/20 space-y-md">
-            <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-2">Nutritional Goals</h2>
+        {/* Right Column: Goals Form */}
+        <div className="lg:col-span-7">
+          <form onSubmit={handleSave} className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-8">
+            <h2 className="font-headline-sm text-xl text-text-primary font-medium border-b border-border-subtle pb-4">Nutritional Goals</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Daily Calories (kcal)</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Daily Calories (kcal)</label>
                 <input 
                   type="number" 
                   required
                   min="500"
                   value={goals.targetCalories} 
                   onChange={(e) => setGoals({...goals, targetCalories: parseInt(e.target.value) || 0})}
-                  className="w-full p-3 bg-white border border-outline-variant/50 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-all text-lg font-bold" 
+                  className="w-full p-3 bg-white border border-border-input rounded-md text-text-primary font-medium text-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                 />
               </div>
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Protein (g)</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Protein Target (g)</label>
                 <input 
                   type="number" 
                   required
                   min="10"
                   value={goals.targetProtein} 
                   onChange={(e) => setGoals({...goals, targetProtein: parseInt(e.target.value) || 0})}
-                  className="w-full p-3 bg-white border border-outline-variant/50 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-all text-lg font-bold" 
+                  className="w-full p-3 bg-white border border-border-input rounded-md text-text-primary font-medium text-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                 />
               </div>
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Carbs (g)</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Carbs Target (g)</label>
                 <input 
                   type="number" 
                   required
                   min="10"
                   value={goals.targetCarbs} 
                   onChange={(e) => setGoals({...goals, targetCarbs: parseInt(e.target.value) || 0})}
-                  className="w-full p-3 bg-white border border-outline-variant/50 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-all text-lg font-bold" 
+                  className="w-full p-3 bg-white border border-border-input rounded-md text-text-primary font-medium text-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                 />
               </div>
               <div>
-                <label className="block font-label-md text-on-surface-variant mb-1">Fats (g)</label>
+                <label className="block font-label-md text-text-secondary text-sm font-medium mb-2">Fats Target (g)</label>
                 <input 
                   type="number" 
                   required
                   min="10"
                   value={goals.targetFats} 
                   onChange={(e) => setGoals({...goals, targetFats: parseInt(e.target.value) || 0})}
-                  className="w-full p-3 bg-white border border-outline-variant/50 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-all text-lg font-bold" 
+                  className="w-full p-3 bg-white border border-border-input rounded-md text-text-primary font-medium text-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" 
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              disabled={saving}
-              className="w-full mt-4 bg-primary text-white py-4 rounded-xl font-headline-sm text-headline-sm hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-md disabled:opacity-70"
-            >
-              {saving ? 'Saving...' : 'Save Settings'}
-            </button>
-          </form>
-
-          <div className="bg-error/5 p-md lg:p-lg rounded-2xl border border-error/20 space-y-sm flex flex-col sm:flex-row items-center justify-between">
-            <div>
-              <h2 className="font-headline-sm text-headline-sm text-error">Account Actions</h2>
-              <p className="font-body-sm text-on-surface-variant">Switch accounts or sign out securely.</p>
+            <div className="pt-6 border-t border-border-subtle">
+              <button 
+                type="submit" 
+                disabled={saving}
+                className="w-full bg-primary text-white py-4 rounded-md font-button text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
+              >
+                {saving ? 'Saving...' : 'Save Settings'}
+              </button>
             </div>
-            <button 
-              onClick={handleSignOut}
-              className="w-full sm:w-auto px-8 py-3 bg-error text-white rounded-full font-label-lg hover:bg-error/90 transition-colors active:scale-95 shadow-md mt-4 sm:mt-0"
-            >
-              Sign Out
-            </button>
-          </div>
+          </form>
         </div>
 
       </div>

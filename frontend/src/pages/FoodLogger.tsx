@@ -79,20 +79,18 @@ export default function FoodLogger() {
   };
 
   return (
-    <div className="w-full p-4 lg:p-8 space-y-md lg:space-y-lg animate-in fade-in zoom-in duration-500">
-      
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="px-margin-page py-stack-md max-w-[1200px] mx-auto min-h-screen">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Log Meal</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">Track your nutrition with AI</p>
+          <h1 className="font-headline-lg text-4xl text-text-primary tracking-tight">Log Meal</h1>
+          <p className="font-body-md text-text-secondary mt-2">Track your nutrition with AI precision</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-md lg:gap-lg">
-        <div className="space-y-md lg:space-y-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+        <div className="space-y-stack-md">
           {/* Hero Section: Photo Upload */}
-          <section className="relative group">
+          <section className="relative group bg-white border border-border-subtle rounded-lg p-6 shadow-sm">
             <input 
               type="file" 
               accept="image/*" 
@@ -103,98 +101,95 @@ export default function FoodLogger() {
             />
             <div 
               onClick={() => !loading && fileInputRef.current?.click()}
-              className="aspect-[4/3] w-full rounded-lg bg-primary-container/10 border-2 border-dashed border-primary-container flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:bg-primary-container/20 overflow-hidden relative"
+              className="aspect-video w-full rounded-lg bg-surface border-2 border-dashed border-border-input flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:border-primary/50 overflow-hidden relative group-hover:bg-surface-container-low"
             >
               {imagePreview ? (
                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover absolute inset-0 z-10" />
               ) : (
                 <>
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,191,0.05)_0%,transparent_70%)]"></div>
                   <div className="relative z-10 flex flex-col items-center pointer-events-none">
-                    <div className="w-24 h-24 mb-md transform group-hover:scale-110 transition-transform duration-500 ease-out flex items-center justify-center text-primary-container">
-                      <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>add_a_photo</span>
+                    <div className="w-16 h-16 mb-4 rounded-full bg-primary-container/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+                      <span className="material-symbols-outlined text-4xl">add_a_photo</span>
                     </div>
-                    <h2 className="font-headline-md text-headline-md text-on-surface mb-xs">Snap your meal</h2>
-                    <p className="font-body-md text-body-md text-outline max-w-[240px]">AI will automatically recognize and calculate your macros</p>
+                    <h2 className="font-headline-sm text-xl text-text-primary font-medium mb-1">Upload Meal Photo</h2>
+                    <p className="font-body-sm text-text-secondary max-w-[240px]">Drag and drop or click to upload. AI will calculate macros instantly.</p>
                   </div>
                 </>
               )}
               {loading && imagePreview && (
-                <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-white/20 border-t-primary rounded-full animate-spin"></div>
+                <div className="absolute inset-0 bg-white/70 z-20 flex items-center justify-center backdrop-blur-sm">
+                  <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
                 </div>
               )}
             </div>
           </section>
 
           {/* Search Bar / Text Input */}
-          <section className="relative">
+          <section className="bg-white border border-border-subtle rounded-lg p-6 shadow-sm">
+            <h3 className="font-headline-sm text-lg text-text-primary mb-4 font-medium">Or log manually</h3>
             <form onSubmit={handleAnalyzeText} className="relative flex items-center group">
-              <span className="material-symbols-outlined absolute left-4 text-primary">search</span>
+              <span className="material-symbols-outlined absolute left-4 text-text-secondary">search</span>
               <input 
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={loading}
-                className="w-full pl-12 pr-24 py-4 bg-surface-container-lowest border border-outline-variant/30 rounded-full font-body-md text-body-md text-on-surface placeholder:text-outline shadow-[0_4px_20px_rgba(45,212,191,0.05)] focus:ring-2 focus:ring-primary-container transition-all outline-none" 
-                placeholder="Or describe it (e.g., Apple and oats)..." 
+                className="w-full pl-12 pr-28 py-3 bg-surface border border-border-input rounded-lg font-body-md text-text-primary placeholder:text-text-secondary focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" 
+                placeholder="Describe your meal (e.g., Avocado Toast)" 
                 type="text"
               />
               <button 
                 type="submit" 
                 disabled={loading || !description.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-primary text-white rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-white rounded font-button text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {loading ? '...' : 'Analyze'}
               </button>
             </form>
-          </section>
-
-          {/* Contextual Suggestions / Chips */}
-          <section className="flex flex-wrap gap-2">
-            <button onClick={() => setDescription("Oatmeal with berries")} className="px-4 py-2 rounded-full border border-primary-container/30 text-primary bg-white font-label-md text-label-md hover:bg-primary-container/10 transition-colors active:scale-95">Breakfast</button>
-            <button onClick={() => setDescription("Greek yogurt and almonds")} className="px-4 py-2 rounded-full border border-primary-container/30 text-primary bg-white font-label-md text-label-md hover:bg-primary-container/10 transition-colors active:scale-95">Quick Snack</button>
-            <button onClick={() => setDescription("Grilled chicken salad")} className="px-4 py-2 rounded-full border border-primary-container/30 text-primary bg-white font-label-md text-label-md hover:bg-primary-container/10 transition-colors active:scale-95">Lunch Ideas</button>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <button onClick={() => setDescription("Oatmeal with berries")} className="px-3 py-1 rounded-full border border-border-subtle text-text-secondary hover:text-primary hover:border-primary/50 text-sm transition-colors">Breakfast</button>
+              <button onClick={() => setDescription("Greek yogurt and almonds")} className="px-3 py-1 rounded-full border border-border-subtle text-text-secondary hover:text-primary hover:border-primary/50 text-sm transition-colors">Quick Snack</button>
+            </div>
           </section>
         </div>
 
         <div>
           {/* Analysis Result or Recent Items */}
           {analysisResult ? (
-            <div className="bg-surface-container-lowest p-md rounded-2xl shadow-[0_4px_20px_rgba(45,212,191,0.08)] border border-primary/20 space-y-md animate-in slide-in-from-right-8 duration-500">
-              <div className="flex items-center gap-2 border-b border-outline-variant/20 pb-md">
+            <div className="bg-white p-8 rounded-lg shadow-sm border border-border-subtle space-y-6 animate-in slide-in-from-right-8 duration-500">
+              <div className="flex items-center gap-3 border-b border-border-subtle pb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">check_circle</span>
-                <h3 className="font-headline-md text-headline-md text-on-surface">Analysis Complete</h3>
+                <h3 className="font-headline-sm text-2xl text-text-primary">Analysis Complete</h3>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-2">
-                <div className="bg-surface p-sm rounded-lg text-center">
-                  <p className="font-label-sm text-outline uppercase tracking-wider mb-1">Calories</p>
-                  <p className="font-headline-md text-primary">{analysisResult.nutritionSummary.calories}</p>
+                <div className="bg-surface p-4 rounded-lg text-center border border-border-subtle">
+                  <p className="font-label-sm text-text-secondary uppercase tracking-wider mb-1">Calories</p>
+                  <p className="font-headline-md text-primary font-bold">{analysisResult.nutritionSummary.calories}</p>
                 </div>
-                <div className="bg-surface p-sm rounded-lg text-center">
-                  <p className="font-label-sm text-outline uppercase tracking-wider mb-1">Protein</p>
-                  <p className="font-headline-md text-on-surface">{analysisResult.nutritionSummary.protein}g</p>
+                <div className="bg-surface p-4 rounded-lg text-center border border-border-subtle">
+                  <p className="font-label-sm text-text-secondary uppercase tracking-wider mb-1">Protein</p>
+                  <p className="font-headline-md text-text-primary font-medium">{analysisResult.nutritionSummary.protein}g</p>
                 </div>
-                <div className="bg-surface p-sm rounded-lg text-center">
-                  <p className="font-label-sm text-outline uppercase tracking-wider mb-1">Carbs</p>
-                  <p className="font-headline-md text-on-surface">{analysisResult.nutritionSummary.carbs}g</p>
+                <div className="bg-surface p-4 rounded-lg text-center border border-border-subtle">
+                  <p className="font-label-sm text-text-secondary uppercase tracking-wider mb-1">Carbs</p>
+                  <p className="font-headline-md text-text-primary font-medium">{analysisResult.nutritionSummary.carbs}g</p>
                 </div>
-                <div className="bg-surface p-sm rounded-lg text-center">
-                  <p className="font-label-sm text-outline uppercase tracking-wider mb-1">Fats</p>
-                  <p className="font-headline-md text-on-surface">{analysisResult.nutritionSummary.fat}g</p>
+                <div className="bg-surface p-4 rounded-lg text-center border border-border-subtle">
+                  <p className="font-label-sm text-text-secondary uppercase tracking-wider mb-1">Fats</p>
+                  <p className="font-headline-md text-text-primary font-medium">{analysisResult.nutritionSummary.fat}g</p>
                 </div>
               </div>
 
-              <div className="space-y-sm">
-                <h4 className="font-label-md text-on-surface-variant uppercase tracking-wider">Detected Items</h4>
+              <div className="space-y-4">
+                <h4 className="font-label-md text-text-primary uppercase tracking-wider text-sm font-bold">Detected Items</h4>
                 <ul className="space-y-2">
                   {analysisResult.foodItems.map((item: any, i: number) => (
-                    <li key={i} className="flex justify-between items-center bg-surface-bright p-sm rounded-lg border border-outline-variant/10">
+                    <li key={i} className="flex justify-between items-center bg-surface p-3 rounded-lg border border-border-subtle">
                       <div>
-                        <span className="font-body-md text-on-surface">{item.name}</span>
-                        <span className="font-label-sm text-outline ml-2">({item.quantity})</span>
+                        <span className="font-body-md text-text-primary font-medium">{item.name}</span>
+                        <span className="text-sm text-text-secondary ml-2">({item.quantity})</span>
                       </div>
-                      <span className="font-label-md text-primary bg-primary-container/20 px-2 py-1 rounded-md">{item.calories} kcal</span>
+                      <span className="text-sm font-medium text-primary bg-primary-container/10 px-2 py-1 rounded">{item.calories} kcal</span>
                     </li>
                   ))}
                 </ul>
@@ -203,34 +198,33 @@ export default function FoodLogger() {
               <button 
                 onClick={saveMeal} 
                 disabled={loading} 
-                className="w-full mt-4 bg-primary text-white py-4 rounded-full font-headline-md text-headline-md hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-lg"
+                className="w-full mt-6 bg-primary text-white py-3 rounded-lg font-button text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm"
               >
                 <span className="material-symbols-outlined">save</span>
                 Save to Log
               </button>
             </div>
           ) : (
-            <section className="space-y-sm mt-lg lg:mt-0">
-              <div className="flex items-center justify-between">
-                <h3 className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Recently Logged</h3>
-                <button className="text-primary font-label-sm text-label-sm hover:underline">View All</button>
+            <section className="bg-white border border-border-subtle rounded-lg shadow-sm overflow-hidden h-full">
+              <div className="px-6 py-4 border-b border-border-subtle bg-surface flex items-center justify-between">
+                <h3 className="font-label-md text-text-primary uppercase tracking-wider font-bold">Recently Logged</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-sm max-h-[500px] overflow-y-auto">
+              <div className="divide-y divide-border-subtle max-h-[600px] overflow-y-auto">
                 {recentMeals.length > 0 ? recentMeals.map((meal, index) => (
-                  <div key={meal.id || index} className="bg-surface-container-lowest p-sm rounded-xl flex items-center gap-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary-container transition-colors cursor-pointer active:scale-95">
-                    <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-2xl shrink-0">
-                      🥗
+                  <div key={meal.id || index} className="p-4 flex items-center gap-4 hover:bg-surface transition-colors cursor-pointer group">
+                    <div className="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-2xl shrink-0">
+                      {meal.imageUrl ? <img src={meal.imageUrl} className="w-full h-full object-cover rounded-lg" alt="meal"/> : "🥗"}
                     </div>
-                    <div className="overflow-hidden">
-                      <p className="font-label-md text-label-md text-on-surface truncate">
+                    <div className="flex-1 overflow-hidden">
+                      <p className="font-body-md text-text-primary truncate font-medium group-hover:text-primary transition-colors">
                         {meal.foodItems?.map((i: any) => i.name).join(', ') || 'AI Logged Meal'}
                       </p>
-                      <p className="font-label-sm text-label-sm text-outline">{meal.nutritionSummary?.calories || 0} kcal</p>
+                      <p className="text-sm text-text-secondary">{meal.nutritionSummary?.calories || 0} kcal • {new Date(meal.timestamp).toLocaleDateString()}</p>
                     </div>
                   </div>
                 )) : (
-                  <div className="col-span-1 md:col-span-2 text-center py-8 text-on-surface-variant font-body-md">
-                    No meals logged yet. Snap a photo above!
+                  <div className="p-8 text-center text-text-secondary font-body-md">
+                    No meals logged yet. Snap a photo to get started.
                   </div>
                 )}
               </div>
