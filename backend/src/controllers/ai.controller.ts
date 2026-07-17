@@ -38,9 +38,9 @@ export const getRecommendations = async (req: Request, res: Response, next: Next
 
 export const analyzeImage = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { imageUri } = req.body;
-    if (!imageUri) return res.status(400).json({ error: 'imageUri (gs:// format) is required' });
-    const analysis = await aiService.analyzeMealImage(imageUri);
+    const { base64Image } = req.body;
+    if (!base64Image) return res.status(400).json({ error: 'base64Image is required' });
+    const analysis = await aiService.analyzeMealImage(base64Image);
     res.status(200).json({ data: analysis });
   } catch (error) {
     next(error);

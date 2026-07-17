@@ -7,7 +7,8 @@ export function BottomNav() {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
     { name: 'Log', path: '/log', icon: 'add_a_photo' },
-    { name: 'Chat', path: '/chat', icon: 'smart_toy' }
+    { name: 'Chat', path: '/chat', icon: 'smart_toy' },
+    { name: 'Settings', path: '/settings', icon: 'settings' }
   ];
 
   return (

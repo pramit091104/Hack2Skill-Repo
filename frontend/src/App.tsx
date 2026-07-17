@@ -12,6 +12,7 @@ const Login = React.lazy(() => import('./pages/Login'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const FoodLogger = React.lazy(() => import('./pages/FoodLogger'));
 const Chatbot = React.lazy(() => import('./pages/Chatbot'));
+const Settings = React.lazy(() => import('./pages/Settings'));
 
 // Protected Route Wrapper with Sidebar Layout
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
           <Route path="/log" element={<ProtectedLayout><FoodLogger /></ProtectedLayout>} />
           <Route path="/chat" element={<ProtectedLayout><Chatbot /></ProtectedLayout>} />
+          <Route path="/settings" element={<ProtectedLayout><Settings /></ProtectedLayout>} />
         </Routes>
       </React.Suspense>
     </BrowserRouter>

@@ -67,10 +67,10 @@ export function Sidebar() {
         </div>
 
         <div className="flex flex-col border-t border-outline-variant/10 pt-4">
-          <a className="text-outline flex items-center gap-3 px-6 py-3 hover:bg-primary-container/10 hover:text-primary transition-all duration-200 cursor-pointer">
+          <Link to="/settings" className={`flex items-center gap-3 px-6 py-3 transition-all duration-200 cursor-pointer ${location.pathname === '/settings' ? 'text-primary font-bold bg-primary-container/10' : 'text-outline hover:bg-primary-container/10 hover:text-primary'}`}>
             <span className="material-symbols-outlined">settings</span>
             <span className="font-label-md text-label-md">Settings</span>
-          </a>
+          </Link>
           <a className="text-outline flex items-center gap-3 px-6 py-3 hover:bg-primary-container/10 hover:text-primary transition-all duration-200 cursor-pointer">
             <span className="material-symbols-outlined">help</span>
             <span className="font-label-md text-label-md">Support</span>
