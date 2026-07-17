@@ -1,9 +1,6 @@
 import { geminiFlash, geminiPro } from '../config/gemini';
 import { db } from '../config/firebase';
-import vision from '@google-cloud/vision';
 import { getMealHistory } from './meal.service';
-
-const visionClient = new vision.ImageAnnotatorClient();
 
 // Retry helper for transient Gemini errors (503, 429)
 const withRetry = async <T>(fn: () => Promise<T>, retries = 3, delayMs = 2000): Promise<T> => {
@@ -133,23 +130,29 @@ export const generateRecommendations = async (uid: string) => {
   }
 };
 
-export const analyzeMealImage = async (gsUri: string) => {
-  // Use Google Cloud Vision API to detect labels from the GS URI directly
-  const [result] = await visionClient.labelDetection(gsUri);
-  const labels = result.labelAnnotations?.map(label => label.description).join(', ');
-  
-  if (!labels) throw new Error('No items detected in image');
+export const analyzeMealImage = async (base64Image: string) => {
+  const match = base64Image.match(/^data:(image\/\w+);base64,/);
+  const mimeType = match ? match[1] : 'image/jpeg';
+  const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
 
   const prompt = `
-    You are an expert nutritionist AI. The Google Vision API detected the following items in a meal image: ${labels}.
-    Based on these labels, estimate the most likely components of this meal and approximate their nutritional value for a standard portion size.
+    You are an expert nutritionist AI. Analyze the provided image of a meal.
+    Estimate the most likely components of this meal and approximate their nutritional value for a standard portion size.
     Return strictly raw JSON format without markdown blocks:
     {
       "foodItems": [{ "name": "string", "quantity": "string", "calories": number }],
       "nutritionSummary": { "calories": number, "protein": number, "carbs": number, "fat": number }
     }
   `;
-  const aiResult = await withRetry(() => geminiFlash.generateContent(prompt));
+
+  const imagePart = {
+    inlineData: {
+      data: base64Data,
+      mimeType: mimeType
+    }
+  };
+
+  const aiResult = await withRetry(() => geminiFlash.generateContent([prompt, imagePart]));
   try {
     return JSON.parse(aiResult.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
   } catch(e) {

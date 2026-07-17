@@ -23,8 +23,8 @@ app.set('trust proxy', 1);
 // 1. Security & Standard Middlewares
 app.use(helmet());
 app.use(cors({ origin: '*' })); // Limit this to Firebase Hosting origin in production
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // 2. Rate Limiting (Global)
 const limiter = rateLimit({
