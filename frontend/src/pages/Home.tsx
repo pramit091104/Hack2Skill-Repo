@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <div className="bg-background text-on-surface font-body-md overflow-x-hidden min-h-screen">
       {/* TopNavBar */}
@@ -16,11 +17,34 @@ export default function Home() {
             <a className="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary hover:scale-105 transition-all" href="#">How it Works</a>
             <a className="text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary hover:scale-105 transition-all" href="#">Science</a>
           </div>
-          <div className="flex items-center gap-md">
-            <Link to="/login" className="hidden lg:block text-primary font-bold font-label-md transition-all duration-200 ease-in-out active:scale-95 hover:text-secondary">Login</Link>
+          <div className="hidden lg:flex items-center gap-md">
+            <Link to="/login" className="text-primary font-bold font-label-md transition-all duration-200 ease-in-out active:scale-95 hover:text-secondary">Login</Link>
             <Link to="/login" className="bg-primary text-on-primary px-lg py-sm rounded-full font-label-md shadow-lg shadow-primary/20 transition-all duration-200 ease-in-out active:scale-95 hover:scale-105">Get Started</Link>
           </div>
+          
+          {/* Hamburger Icon for Mobile */}
+          <button 
+            className="lg:hidden text-primary p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <span className="material-symbols-outlined text-3xl">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden absolute top-20 left-0 w-full bg-surface border-b border-outline-variant/20 shadow-lg flex flex-col items-center py-lg gap-md animate-in slide-in-from-top-4 z-40">
+            <a href="#" className="font-headline-md text-on-surface hover:text-primary transition-colors">Features</a>
+            <a href="#" className="font-headline-md text-on-surface hover:text-primary transition-colors">How it Works</a>
+            <a href="#" className="font-headline-md text-on-surface hover:text-primary transition-colors">Science</a>
+            <div className="flex flex-col gap-sm w-full px-xl mt-md">
+              <Link to="/login" className="text-center w-full py-md border-2 border-primary text-primary rounded-full font-bold">Login</Link>
+              <Link to="/login" className="text-center w-full py-md bg-primary text-white rounded-full font-bold">Get Started</Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main>
@@ -56,8 +80,8 @@ export default function Home() {
           </div>
           
           {/* Right: Interactive UI Collage */}
-          <div className="flex-1 w-full h-[600px] lg:h-screen flex items-center justify-center p-md relative overflow-visible z-10 animate-in slide-in-from-right-8 duration-1000">
-            <div className="relative w-full max-w-lg aspect-[4/5] flex items-center justify-center mt-12 lg:mt-0">
+          <div className="flex-1 w-full h-[400px] lg:h-screen flex items-center justify-center p-md relative overflow-visible z-10 animate-in slide-in-from-right-8 duration-1000">
+            <div className="relative w-full max-w-[300px] lg:max-w-lg aspect-[4/5] flex items-center justify-center mt-8 lg:mt-0">
               {/* Background Glow */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-transparent rounded-full blur-3xl scale-75 opacity-60"></div>
               
@@ -69,8 +93,8 @@ export default function Home() {
               />
 
               {/* Floating Scanner Card */}
-              <div className="absolute -left-4 lg:-left-20 top-12 w-48 sm:w-64 h-64 sm:h-72 bg-white/70 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-[0_20px_40px_rgba(0,107,95,0.15)] z-20 overflow-hidden flex flex-col p-4 animate-float group cursor-pointer">
-                <div className="flex justify-between items-center mb-2 px-2">
+              <div className="absolute -left-2 lg:-left-20 top-4 lg:top-12 w-36 sm:w-48 lg:w-64 h-48 sm:h-64 lg:h-72 bg-white/70 backdrop-blur-xl border border-white/50 rounded-2xl lg:rounded-[2rem] shadow-[0_20px_40px_rgba(0,107,95,0.15)] z-20 overflow-hidden flex flex-col p-2 lg:p-4 animate-float group cursor-pointer">
+                <div className="flex justify-between items-center mb-1 lg:mb-2 px-1 lg:px-2">
                   <span className="font-label-sm text-on-surface font-bold">Analyze...</span>
                   <span className="material-symbols-outlined text-primary text-[18px]">document_scanner</span>
                 </div>
@@ -93,8 +117,8 @@ export default function Home() {
               </div>
 
               {/* Floating Calorie Badge */}
-              <div className="absolute -right-2 lg:-right-12 bottom-32 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-30 animate-float" style={{ animationDelay: '1s' }}>
-                <img src="/images/hero_salad.png" className="w-10 h-10 rounded-full object-cover border-2 border-primary-container" alt="Salad" />
+              <div className="absolute -right-2 lg:-right-12 bottom-12 lg:bottom-32 bg-white/90 backdrop-blur-md px-3 lg:px-4 py-2 lg:py-3 rounded-xl lg:rounded-2xl shadow-xl flex items-center gap-2 lg:gap-3 z-30 animate-float" style={{ animationDelay: '1s' }}>
+                <img src="/images/hero_salad.png" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full object-cover border-2 border-primary-container" alt="Salad" />
                 <div>
                   <p className="font-label-sm font-bold text-on-surface leading-tight">Superfood Bowl</p>
                   <p className="font-label-sm text-primary">320 kcal</p>
@@ -142,8 +166,8 @@ export default function Home() {
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] border-[40px] border-white rounded-full"></div>
           </div>
-          <div className="relative z-10 px-lg max-w-container-max mx-auto text-center flex flex-col items-center">
-            <h2 className="font-headline-xl text-on-primary mb-md lg:text-[56px] leading-tight">Ready to transform your health?</h2>
+          <div className="relative z-10 px-md lg:px-lg max-w-container-max mx-auto text-center flex flex-col items-center">
+            <h2 className="font-headline-lg lg:font-headline-xl text-on-primary mb-md lg:text-[56px] leading-tight">Ready to transform your health?</h2>
             <p className="text-on-primary/80 max-w-2xl text-body-lg mb-lg">Join thousands of people who have already optimized their life with NutriSmart AI. Your journey to peak vitality starts with one tap.</p>
             <div className="flex flex-col sm:flex-row gap-md">
               <Link to="/login" className="bg-white text-primary px-xl py-md rounded-full font-headline-md shadow-2xl transition-all hover:scale-105 active:scale-95">Join the Revolution</Link>

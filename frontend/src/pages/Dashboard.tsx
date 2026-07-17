@@ -69,11 +69,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="w-full p-6 lg:p-8 space-y-lg animate-in fade-in zoom-in duration-500">
+    <div className="w-full p-4 lg:p-8 space-y-md lg:space-y-lg animate-in fade-in zoom-in duration-500">
       
       {/* Hero Section */}
-      <section className="mt-lg">
-        <div className="bg-primary-container/10 p-lg rounded-lg ambient-glow relative overflow-hidden">
+      <section className="mt-4 lg:mt-lg">
+        <div className="bg-primary-container/10 p-md lg:p-lg rounded-lg ambient-glow relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="font-headline-md text-headline-md text-on-primary-container mb-xs">
               Great morning, {user?.email?.split('@')[0] || 'Alex'}! 🌟
@@ -88,13 +88,13 @@ export default function Dashboard() {
       </section>
 
       {/* Main Grid for Desktop (Bento Pattern) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-md lg:gap-lg">
         
         {/* Left Column: Calories & Water */}
         <div className="lg:col-span-2 flex flex-col gap-md">
           <section className="grid grid-cols-1 md:grid-cols-2 gap-md flex-1">
             
-            <div className="bg-surface-container-lowest p-lg rounded-lg ambient-glow flex flex-col items-center justify-center text-center space-y-md border border-outline-variant/10">
+            <div className="bg-surface-container-lowest p-md lg:p-lg rounded-lg ambient-glow flex flex-col items-center justify-center text-center space-y-md border border-outline-variant/10">
               <div className="relative w-40 h-40">
                 <svg className="w-full h-full -rotate-90 origin-center">
                   <circle className="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" strokeWidth="12"></circle>

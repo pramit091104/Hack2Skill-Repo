@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
 export default function FoodLogger() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [recentMeals, setRecentMeals] = useState<any[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    api.get('/meals/history')
+      .then(res => setRecentMeals(res.data.data || []))
+      .catch(console.error);
+  }, [analysisResult]);
 
   const handleAnalyzeText = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) return;
     
     setLoading(true);
+    setImagePreview(null);
     try {
       const res = await api.post('/ai/analyze/text', { text: description });
       setAnalysisResult(res.data.data);
@@ -20,6 +30,30 @@ export default function FoodLogger() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      setImagePreview(base64String);
+      setLoading(true);
+      try {
+        const res = await api.post('/ai/analyze/image', { base64Image: base64String });
+        setAnalysisResult(res.data.data);
+      } catch (error) {
+        console.error(error);
+        alert('Failed to analyze image. Please try again.');
+        setImagePreview(null);
+      } finally {
+        setLoading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const saveMeal = async () => {
@@ -35,6 +69,7 @@ export default function FoodLogger() {
       alert('Meal saved successfully!');
       setDescription('');
       setAnalysisResult(null);
+      setImagePreview(null);
     } catch (error) {
        console.error(error);
        alert('Failed to save meal');
@@ -44,7 +79,7 @@ export default function FoodLogger() {
   };
 
   return (
-    <div className="w-full p-6 lg:p-8 space-y-lg animate-in fade-in zoom-in duration-500">
+    <div className="w-full p-4 lg:p-8 space-y-md lg:space-y-lg animate-in fade-in zoom-in duration-500">
       
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -54,19 +89,41 @@ export default function FoodLogger() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
-        <div className="space-y-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-md lg:gap-lg">
+        <div className="space-y-md lg:space-y-lg">
           {/* Hero Section: Photo Upload */}
           <section className="relative group">
-            <div className="aspect-[4/3] w-full rounded-lg bg-primary-container/10 border-2 border-dashed border-primary-container flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:bg-primary-container/20">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,191,0.05)_0%,transparent_70%)]"></div>
-              <div className="relative z-10 flex flex-col items-center pointer-events-none">
-                <div className="w-24 h-24 mb-md transform group-hover:scale-110 transition-transform duration-500 ease-out flex items-center justify-center text-primary-container">
-                  <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>add_a_photo</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleImageUpload} 
+              disabled={loading}
+            />
+            <div 
+              onClick={() => !loading && fileInputRef.current?.click()}
+              className="aspect-[4/3] w-full rounded-lg bg-primary-container/10 border-2 border-dashed border-primary-container flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:bg-primary-container/20 overflow-hidden relative"
+            >
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover absolute inset-0 z-10" />
+              ) : (
+                <>
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,191,0.05)_0%,transparent_70%)]"></div>
+                  <div className="relative z-10 flex flex-col items-center pointer-events-none">
+                    <div className="w-24 h-24 mb-md transform group-hover:scale-110 transition-transform duration-500 ease-out flex items-center justify-center text-primary-container">
+                      <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>add_a_photo</span>
+                    </div>
+                    <h2 className="font-headline-md text-headline-md text-on-surface mb-xs">Snap your meal</h2>
+                    <p className="font-body-md text-body-md text-outline max-w-[240px]">AI will automatically recognize and calculate your macros</p>
+                  </div>
+                </>
+              )}
+              {loading && imagePreview && (
+                <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-white/20 border-t-primary rounded-full animate-spin"></div>
                 </div>
-                <h2 className="font-headline-md text-headline-md text-on-surface mb-xs">Snap your meal</h2>
-                <p className="font-body-md text-body-md text-outline max-w-[240px]">AI will automatically recognize and calculate your macros</p>
-              </div>
+              )}
             </div>
           </section>
 
@@ -158,27 +215,24 @@ export default function FoodLogger() {
                 <h3 className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Recently Logged</h3>
                 <button className="text-primary font-label-sm text-label-sm hover:underline">View All</button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-sm">
-                {/* Recent Item 1 */}
-                <div className="bg-surface-container-lowest p-sm rounded-xl flex items-center gap-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary-container transition-colors cursor-pointer active:scale-95">
-                  <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-2xl">
-                    🍎
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-sm max-h-[500px] overflow-y-auto">
+                {recentMeals.length > 0 ? recentMeals.map((meal, index) => (
+                  <div key={meal.id || index} className="bg-surface-container-lowest p-sm rounded-xl flex items-center gap-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary-container transition-colors cursor-pointer active:scale-95">
+                    <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-2xl shrink-0">
+                      🥗
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-label-md text-label-md text-on-surface truncate">
+                        {meal.foodItems?.map((i: any) => i.name).join(', ') || 'AI Logged Meal'}
+                      </p>
+                      <p className="font-label-sm text-label-sm text-outline">{meal.nutritionSummary?.calories || 0} kcal</p>
+                    </div>
                   </div>
-                  <div className="overflow-hidden">
-                    <p className="font-label-md text-label-md text-on-surface truncate">Apple</p>
-                    <p className="font-label-sm text-label-sm text-outline">95 kcal</p>
+                )) : (
+                  <div className="col-span-1 md:col-span-2 text-center py-8 text-on-surface-variant font-body-md">
+                    No meals logged yet. Snap a photo above!
                   </div>
-                </div>
-                {/* Recent Item 2 */}
-                <div className="bg-surface-container-lowest p-sm rounded-xl flex items-center gap-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary-container transition-colors cursor-pointer active:scale-95">
-                  <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-2xl">
-                    🥣
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="font-label-md text-label-md text-on-surface truncate">Oatmeal</p>
-                    <p className="font-label-sm text-label-sm text-outline">150 kcal</p>
-                  </div>
-                </div>
+                )}
               </div>
             </section>
           )}

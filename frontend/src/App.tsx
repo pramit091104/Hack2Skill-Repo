@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
 import { useAuthStore } from './store/useAuthStore';
 import { Sidebar } from './components/layout/Sidebar';
+import { BottomNav } from './components/layout/BottomNav';
 
 // Lazy loading pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -24,9 +25,12 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Sidebar hidden on mobile, visible on lg screens */}
       <Sidebar />
       {/* Main content takes full width on mobile, and margin-left on desktop to accommodate sidebar */}
-      <main className="flex-1 lg:ml-72 w-full max-w-[100vw]">
+      <main className="flex-1 lg:ml-72 w-full max-w-[100vw] pb-20 lg:pb-0">
         {children}
       </main>
+      
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 };
