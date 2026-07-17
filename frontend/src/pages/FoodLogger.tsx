@@ -79,7 +79,7 @@ export default function FoodLogger() {
   };
 
   return (
-    <div className="px-margin-page py-stack-md max-w-[1200px] mx-auto min-h-screen">
+    <div className="px-4 lg:px-8 py-stack-md max-w-[1200px] mx-auto min-h-screen">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-headline-lg text-4xl text-text-primary tracking-tight">Log Meal</h1>

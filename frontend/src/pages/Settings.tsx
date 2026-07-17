@@ -82,7 +82,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-margin-page py-stack-md min-h-screen">
+    <div className="max-w-[1200px] mx-auto px-4 lg:px-8 py-stack-md min-h-screen">
       <div className="mb-8 mt-8 border-b border-border-subtle pb-6 flex justify-between items-end">
         <div>
           <h1 className="font-headline-lg text-4xl text-text-primary tracking-tight mb-2">Settings</h1>

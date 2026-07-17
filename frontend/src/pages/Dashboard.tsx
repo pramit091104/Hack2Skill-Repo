@@ -45,7 +45,7 @@ export default function Dashboard() {
   const fatPercent = Math.min((fatsToday / targetFats) * 100, 100);
 
   return (
-    <div className="px-margin-page py-stack-md max-w-[1200px] mx-auto min-h-screen">
+    <div className="px-4 lg:px-8 py-stack-md max-w-[1200px] mx-auto min-h-screen">
       {/* Greeting */}
       <section className="mb-stack-lg animate-in fade-in slide-in-from-bottom-4 duration-700 mt-8">
         <h1 className="font-headline-lg text-4xl text-text-primary mb-2">Good morning, {user?.email?.split('@')[0] || 'Alex'}</h1>
@@ -53,7 +53,7 @@ export default function Dashboard() {
       </section>
 
       {/* Metric Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter mb-stack-lg">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-gutter mb-stack-lg">
         {/* Calories Card */}
         <div className="bg-surface border border-border-subtle p-6 rounded-lg transition-all hover:border-primary-fixed duration-300 shadow-sm">
           <div className="flex justify-between items-start mb-4">
@@ -148,7 +148,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-6 md:gap-12 text-right self-end md:self-auto">
-                <div className="flex gap-4 md:gap-6">
+                <div className="hidden md:flex gap-4 md:gap-6">
                   <div className="text-center">
                     <p className="text-[10px] uppercase tracking-widest text-text-secondary mb-1">Prot</p>
                     <p className="text-sm font-semibold text-text-primary">{Math.round(meal.nutritionSummary?.protein || 0)}g</p>

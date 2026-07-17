@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { api } from '../services/api';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,7 +23,17 @@ export default function Login() {
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
       }
-      navigate('/dashboard');
+      
+      try {
+        await api.get('/users/profile');
+        navigate('/dashboard');
+      } catch (profileErr: any) {
+        if (profileErr.response?.status === 404 || !isLogin) {
+          navigate('/onboarding');
+        } else {
+          navigate('/dashboard');
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
     } finally {
@@ -36,7 +47,17 @@ export default function Login() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      navigate('/dashboard');
+      
+      try {
+        await api.get('/users/profile');
+        navigate('/dashboard');
+      } catch (profileErr: any) {
+        if (profileErr.response?.status === 404) {
+          navigate('/onboarding');
+        } else {
+          navigate('/dashboard');
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Google authentication failed');
     } finally {
@@ -83,6 +104,13 @@ export default function Login() {
         </Link>
         
         <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700">
+          
+          {/* Mobile Only Branding */}
+          <div className="flex lg:hidden items-center justify-center gap-2 mb-8">
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>nutrition</span>
+            <span className="font-headline-md text-2xl font-bold text-primary">NutriSmart AI</span>
+          </div>
+
           <div className="mb-10 text-center lg:text-left">
             <h2 className="font-headline-lg text-4xl text-text-primary mb-3">
               {isLogin ? 'Welcome back' : 'Create an account'}

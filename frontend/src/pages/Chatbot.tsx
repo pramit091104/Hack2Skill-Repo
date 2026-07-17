@@ -56,7 +56,7 @@ export default function Chatbot() {
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] max-w-[1200px] mx-auto px-margin-page py-6">
+    <div className="flex flex-col h-[calc(100vh-80px)] max-w-[1200px] mx-auto px-4 lg:px-8 py-6">
       
       {/* Header */}
       <div className="flex items-center gap-4 mb-6 pb-4 border-b border-border-subtle shrink-0">

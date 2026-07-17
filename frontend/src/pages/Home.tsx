@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="bg-surface text-text-primary overflow-x-hidden min-h-screen font-body-md">
       <nav className="fixed top-0 w-full z-50 bg-surface border-b border-border-subtle">
-<div className="max-w-[1200px] mx-auto px-margin-page py-4 flex justify-between items-center">
+<div className="max-w-[1200px] mx-auto px-4 lg:px-8 py-4 flex justify-between items-center">
 
 <div className="font-headline-sm text-headline-sm font-bold text-primary">
                 NutriSmart AI
@@ -25,9 +25,9 @@ export default function Home() {
 </nav>
 <main className="pt-24">
 
-<section className="max-w-[1200px] mx-auto px-margin-page py-stack-lg flex flex-col md:flex-row items-center gap-stack-lg overflow-hidden">
+<section className="max-w-[1200px] mx-auto px-4 lg:px-8 py-stack-lg flex flex-col md:flex-row items-center gap-stack-lg overflow-hidden">
 <div className="w-full md:w-1/2 space-y-stack-md fade-in" style={{ animationDelay: '0.1s' }}>
-<h1 className="font-headline-lg text-[48px] md:text-[64px] leading-tight text-text-primary">
+<h1 className="font-headline-lg text-[36px] md:text-[48px] lg:text-[64px] leading-tight text-text-primary">
                     Your Personal <br/>
 <span className="text-primary font-bold">AI Nutritionist</span>
 </h1>
@@ -59,7 +59,7 @@ export default function Home() {
 </section>
 
 <section className="bg-surface-container-low py-stack-lg">
-<div className="max-w-[1200px] mx-auto px-margin-page">
+<div className="max-w-[1200px] mx-auto px-4 lg:px-8">
 <div className="text-center mb-stack-lg">
 <h2 className="font-headline-lg text-headline-lg text-text-primary mb-stack-sm">Intelligence in Every Bite</h2>
 <p className="text-text-secondary max-w-2xl mx-auto">Our AI engine works silently in the background to provide the most accurate nutritional guidance available today.</p>
@@ -114,7 +114,7 @@ export default function Home() {
 </div>
 </section>
 
-<section className="max-w-[1200px] mx-auto px-margin-page py-stack-lg">
+<section className="max-w-[1200px] mx-auto px-4 lg:px-8 py-stack-lg">
 <div className="flex flex-col md:flex-row items-center gap-stack-lg">
 <div className="w-full md:w-1/3">
 <div className="p-8 border-l-4 border-primary bg-white">
@@ -136,7 +136,7 @@ export default function Home() {
 </div>
 </section>
 
-<section className="max-w-[1200px] mx-auto px-margin-page pb-stack-lg">
+<section className="max-w-[1200px] mx-auto px-4 lg:px-8 pb-stack-lg">
 <div className="relative overflow-hidden bg-primary rounded-xl py-16 px-8 text-center text-on-primary">
 
 <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -157,7 +157,7 @@ export default function Home() {
 </main>
 
 <footer className="bg-surface-container-low border-t border-border-subtle">
-<div className="max-w-[1200px] mx-auto py-stack-lg px-margin-page flex flex-col md:flex-row justify-between items-center gap-gutter">
+<div className="max-w-[1200px] mx-auto py-stack-lg px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-gutter">
 <div className="flex flex-col items-center md:items-start gap-4">
 <div className="font-headline-sm text-headline-sm font-bold text-primary">
                     NutriSmart AI
