@@ -108,7 +108,7 @@ export default function Chatbot() {
       </main>
 
       {/* Interactive Footer Section */}
-      <div className="fixed bottom-0 w-full max-w-container-chat mx-auto z-40 px-md pb-md flex flex-col gap-sm bg-gradient-to-t from-background via-background to-transparent pt-8">
+      <div className="fixed bottom-0 w-full max-w-container-chat mx-auto z-40 px-md pb-24 lg:pb-md flex flex-col gap-sm bg-gradient-to-t from-background via-background to-transparent pt-8">
         
         {/* Quick Suggestions Chips */}
         <div className="flex gap-base overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
