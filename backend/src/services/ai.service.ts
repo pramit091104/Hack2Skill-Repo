@@ -54,7 +54,15 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
 
   const systemInstruction = {
     role: 'system',
-    parts: [{ text: `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}. Be concise, helpful and ensure your advice aligns with their targets.` }],
+    parts: [{ text: `You are the NutriSmart AI assistant. User Context: ${JSON.stringify(profile)}.
+RULES:
+1. Be highly concise, direct, and helpful. Use a maximum of 2-3 short sentences. Format for easy reading on mobile screens.
+2. You MUST return your response in strictly valid JSON format with NO markdown blocks.
+Format:
+{
+  "reply": "Your conversational response here",
+  "suggestions": ["Follow up question 1?", "Follow up question 2?", "Follow up question 3?"]
+}` }],
   };
 
   // Normalize roles and collapse consecutive same-role messages
@@ -89,7 +97,11 @@ export const chatWithAi = async (messages: {role: string, content: string}[], ui
   try {
     const chatModel = geminiFlash.startChat({ systemInstruction, history });
     const result = await withRetry(() => chatModel.sendMessage(latestMsg));
-    return result.response.text();
+    try {
+      return JSON.parse(result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
+    } catch(e) {
+      throw new Error('Failed to parse AI response into JSON');
+    }
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('[chatWithAi] Gemini error:', msg);

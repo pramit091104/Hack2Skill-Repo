@@ -19,8 +19,8 @@ export const chat = async (req: Request, res: Response, next: NextFunction) => {
     const uid = req.user!.uid;
     if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'Messages array is required' });
 
-    const reply = await aiService.chatWithAi(messages, uid);
-    res.status(200).json({ data: { reply } });
+    const response = await aiService.chatWithAi(messages, uid);
+    res.status(200).json({ data: response });
   } catch (error) {
     next(error);
   }
