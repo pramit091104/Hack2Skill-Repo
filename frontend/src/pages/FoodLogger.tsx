@@ -10,8 +10,10 @@ export default function FoodLogger() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [recentMeals, setRecentMeals] = useState<any[]>([]);
   const [isScanning, setIsScanning] = useState(false);
+  const [showLabelScanner, setShowLabelScanner] = useState(false);
   const [barcode, setBarcode] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const labelInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     api.get('/meals/history')
@@ -68,10 +70,35 @@ export default function FoodLogger() {
       setAnalysisResult(result);
     } catch (error) {
       console.error(error);
-      alert('Failed to find product or invalid barcode.');
+      setShowLabelScanner(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLabelImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      setImagePreview(base64String);
+      setLoading(true);
+      try {
+        const res = await api.post('/ai/analyze/nutrition-label', { base64Image: base64String });
+        setAnalysisResult(res.data.data);
+        setShowLabelScanner(false);
+      } catch (error) {
+        console.error(error);
+        alert('Failed to analyze nutrition label. Please try again.');
+        setImagePreview(null);
+      } finally {
+        setLoading(false);
+        if (labelInputRef.current) labelInputRef.current.value = '';
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleManualBarcodeSubmit = (e: React.FormEvent) => {
@@ -114,9 +141,52 @@ export default function FoodLogger() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
         <div className="space-y-stack-md">
-          {/* Hero Section: Photo Upload / Barcode Scan */}
+          {/* Hero Section: Photo Upload / Barcode Scan / Label Scan */}
           <section className="relative group bg-white border border-border-subtle rounded-lg p-6 shadow-sm min-h-[300px] flex flex-col justify-center">
-            {isScanning ? (
+            {showLabelScanner ? (
+              <div className="flex flex-col items-center animate-in fade-in duration-300">
+                <div className="w-full flex justify-between items-center mb-4">
+                  <h3 className="font-headline-sm text-lg text-text-primary text-red-500 flex items-center gap-2">
+                    <span className="material-symbols-outlined">error</span>
+                    Product Not Found
+                  </h3>
+                  <button onClick={() => setShowLabelScanner(false)} className="text-text-secondary hover:text-text-primary">
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+                <p className="text-center font-body-md text-text-secondary mb-6">
+                  We couldn't find that barcode in our database. Would you like to snap a photo of the nutrition label instead?
+                </p>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={labelInputRef} 
+                  onChange={handleLabelImageUpload} 
+                  disabled={loading}
+                />
+                <button
+                  onClick={() => !loading && labelInputRef.current?.click()}
+                  disabled={loading}
+                  className="w-full py-4 bg-primary text-white rounded-lg font-button text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm"
+                >
+                  {loading ? 'Analyzing Label...' : (
+                    <>
+                      <span className="material-symbols-outlined">document_scanner</span>
+                      Scan Nutrition Label
+                    </>
+                  )}
+                </button>
+                {loading && imagePreview && (
+                  <div className="mt-4 w-full h-32 rounded-lg overflow-hidden border border-border-subtle relative opacity-50">
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <div className="w-8 h-8 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : isScanning ? (
               <div className="flex flex-col items-center">
                 <div className="w-full flex justify-between items-center mb-4">
                   <h3 className="font-headline-sm text-lg text-text-primary">Scan Product Barcode</h3>

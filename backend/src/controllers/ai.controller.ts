@@ -46,3 +46,14 @@ export const analyzeImage = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const analyzeNutritionLabel = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { base64Image } = req.body;
+    if (!base64Image) return res.status(400).json({ error: 'base64Image is required' });
+    const analysis = await aiService.analyzeNutritionLabelImage(base64Image);
+    res.status(200).json({ data: analysis });
+  } catch (error) {
+    next(error);
+  }
+};

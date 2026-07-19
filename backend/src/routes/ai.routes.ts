@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { analyzeText, chat, getRecommendations, analyzeImage } from '../controllers/ai.controller';
+import { analyzeText, chat, getRecommendations, analyzeImage, analyzeNutritionLabel } from '../controllers/ai.controller';
 import { requireAuth } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -8,6 +8,7 @@ router.use(requireAuth);
 
 router.post('/analyze/text', analyzeText);
 router.post('/analyze/image', analyzeImage);
+router.post('/analyze/nutrition-label', analyzeNutritionLabel);
 router.get('/recommend', getRecommendations);
 router.post('/chat', chat);
 

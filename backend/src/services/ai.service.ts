@@ -1,4 +1,5 @@
 import { geminiFlash, geminiPro } from '../config/gemini';
+import { visionClient } from '../config/vision';
 import { db } from '../config/firebase';
 import { getMealHistory } from './meal.service';
 
@@ -157,5 +158,45 @@ export const analyzeMealImage = async (base64Image: string) => {
     return JSON.parse(aiResult.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
   } catch(e) {
     throw new Error('Failed to parse Gemini output bridging from Vision API labels');
+  }
+};
+
+export const analyzeNutritionLabelImage = async (base64Image: string) => {
+  const base64Data = base64Image.includes(',') ? base64Image.split(',')[1] : base64Image;
+
+  // 1. Use Google Cloud Vision OCR to extract all text from the nutrition label
+  const request = {
+    image: { content: base64Data },
+    features: [{ type: 'TEXT_DETECTION' }],
+  };
+  
+  const [result] = await visionClient.annotateImage(request);
+  const detections = result.textAnnotations;
+  const extractedText = detections && detections.length > 0 ? detections[0].description : '';
+
+  if (!extractedText) {
+    throw new Error('No text found on the image. Please ensure it is a clear photo of a nutrition label.');
+  }
+
+  // 2. Use Gemini to parse the extracted raw text into structured JSON
+  const prompt = `
+    You are an expert nutritionist AI. The following is raw text extracted from a nutrition label via OCR:
+    
+    "${extractedText}"
+
+    Extract the core nutritional values (Calories, Protein, Carbs, Fat) per serving from this text. 
+    Also try to extract a plausible serving size to represent "quantity", and guess a generic "name" for the product if any context is found, otherwise default to "Custom Food Item".
+    Return strictly raw JSON format without markdown blocks:
+    {
+      "foodItems": [{ "name": "string", "quantity": "string", "calories": number }],
+      "nutritionSummary": { "calories": number, "protein": number, "carbs": number, "fat": number }
+    }
+  `;
+
+  const aiResult = await withRetry(() => geminiFlash.generateContent(prompt));
+  try {
+    return JSON.parse(aiResult.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, ''));
+  } catch(e) {
+    throw new Error('Failed to parse the extracted nutrition text into JSON');
   }
 };
