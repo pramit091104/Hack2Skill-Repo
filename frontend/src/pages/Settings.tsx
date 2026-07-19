@@ -279,7 +279,7 @@ export default function Settings() {
                 disabled={saving}
                 className="w-full bg-primary text-white py-4 rounded-md font-button text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm disabled:opacity-70"
               >
-                {saving ? 'Saving...' : 'Save Settings'}
+                {saving ? <Skeleton className="h-6 w-24 bg-white/50" /> : 'Save Settings'}
               </button>
             </div>
           </form>
