@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithP
 import { auth } from '../config/firebase';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
+import { Skeleton } from '../components/Skeleton';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -145,9 +146,9 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-on-primary py-4 rounded-lg font-button text-lg hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+              className="w-full bg-primary text-on-primary py-4 rounded-lg font-button text-lg hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed shadow-sm flex items-center justify-center"
             >
-              {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? <Skeleton className="h-6 w-24 bg-white/50" /> : (isLogin ? 'Sign In' : 'Create Account')}
             </button>
             
             <div className="relative py-4 flex items-center">

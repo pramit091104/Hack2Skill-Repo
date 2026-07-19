@@ -5,6 +5,7 @@ import { auth } from './config/firebase';
 import { useAuthStore } from './store/useAuthStore';
 import { Sidebar } from './components/layout/Sidebar';
 import { BottomNav } from './components/layout/BottomNav';
+import { Skeleton } from './components/Skeleton';
 
 // Lazy loading pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -19,7 +20,28 @@ const Onboarding = React.lazy(() => import('./pages/Onboarding'));
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuthStore();
   
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen bg-slate-50">
+        <div className="hidden lg:flex w-72 flex-col bg-white border-r border-border-subtle p-6">
+          <Skeleton className="h-10 w-40 mb-12" />
+          <Skeleton className="h-12 w-full mb-4 rounded-xl" />
+          <Skeleton className="h-12 w-full mb-4 rounded-xl" />
+          <Skeleton className="h-12 w-full mb-4 rounded-xl" />
+        </div>
+        <main className="flex-1 p-4 lg:p-8">
+          <Skeleton className="h-10 w-48 mb-8" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <Skeleton className="h-24 w-full rounded-2xl" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+          </div>
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        </main>
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace />;
   
   return (
@@ -50,7 +72,21 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <React.Suspense fallback={<div className="flex h-screen items-center justify-center text-primary font-bold">Loading NutriSmart AI...</div>}>
+      <React.Suspense fallback={
+        <div className="flex min-h-screen bg-slate-50 items-center justify-center p-8">
+          <div className="w-full max-w-md space-y-8">
+            <div className="flex flex-col items-center gap-4">
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <Skeleton className="h-8 w-48 rounded-md" />
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-12 w-full rounded-xl" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+            </div>
+          </div>
+        </div>
+      }>
         <Routes>
           {/* Public Routes - these handle their own navigation if any */}
           <Route path="/" element={<Home />} />

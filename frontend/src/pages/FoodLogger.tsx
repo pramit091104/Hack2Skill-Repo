@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 import BarcodeScanner from '../components/BarcodeScanner';
 import { openFoodFactsApi } from '../services/openFoodFacts';
+import { Skeleton } from '../components/Skeleton';
 
 export default function FoodLogger() {
   const [description, setDescription] = useState('');
@@ -170,7 +171,7 @@ export default function FoodLogger() {
                   disabled={loading}
                   className="w-full py-4 bg-primary text-white rounded-lg font-button text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm"
                 >
-                  {loading ? 'Analyzing Label...' : (
+                  {loading ? <Skeleton className="h-6 w-32 bg-white/50" /> : (
                     <>
                       <span className="material-symbols-outlined">document_scanner</span>
                       Scan Nutrition Label
@@ -180,9 +181,7 @@ export default function FoodLogger() {
                 {loading && imagePreview && (
                   <div className="mt-4 w-full h-32 rounded-lg overflow-hidden border border-border-subtle relative opacity-50">
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                       <div className="w-8 h-8 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
-                    </div>
+                    <Skeleton className="absolute inset-0 bg-white/50 backdrop-blur-sm" />
                   </div>
                 )}
               </div>
@@ -245,9 +244,7 @@ export default function FoodLogger() {
                     </>
                   )}
                   {loading && imagePreview && (
-                    <div className="absolute inset-0 bg-white/70 z-20 flex items-center justify-center backdrop-blur-sm">
-                      <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
-                    </div>
+                    <Skeleton className="absolute inset-0 z-20 backdrop-blur-sm bg-white/50" />
                   )}
                 </div>
                 {!loading && !imagePreview && (
@@ -282,9 +279,9 @@ export default function FoodLogger() {
               <button 
                 type="submit" 
                 disabled={loading || !description.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-white rounded font-button text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-white rounded font-button text-sm hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center"
               >
-                {loading ? '...' : 'Analyze'}
+                {loading ? <Skeleton className="h-4 w-12 bg-white/50" /> : 'Analyze'}
               </button>
             </form>
             <div className="flex flex-wrap gap-2 mt-4">
