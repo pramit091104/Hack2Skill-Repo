@@ -24,16 +24,9 @@ export default function Login() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
       
-      try {
-        await api.get('/users/profile');
-        navigate('/dashboard');
-      } catch (profileErr: any) {
-        if (profileErr.response?.status === 404 || !isLogin) {
-          navigate('/onboarding');
-        } else {
-          navigate('/dashboard');
-        }
-      }
+      // Optimistic UI: Immediately navigate to dashboard.
+      // Profile existence and routing will be handled there.
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Authentication failed');
     } finally {
@@ -48,16 +41,8 @@ export default function Login() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       
-      try {
-        await api.get('/users/profile');
-        navigate('/dashboard');
-      } catch (profileErr: any) {
-        if (profileErr.response?.status === 404) {
-          navigate('/onboarding');
-        } else {
-          navigate('/dashboard');
-        }
-      }
+      // Optimistic UI: Immediately navigate to dashboard.
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Google authentication failed');
     } finally {
