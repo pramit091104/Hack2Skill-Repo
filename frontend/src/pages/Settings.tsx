@@ -3,6 +3,7 @@ import { api } from '../services/api';
 import { auth } from '../config/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { Skeleton } from '../components/Skeleton';
 
 export default function Settings() {
   const [loading, setLoading] = useState(true);
@@ -75,8 +76,76 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
+      <div className="max-w-[1200px] mx-auto px-4 lg:px-8 py-stack-md min-h-screen">
+        <div className="mb-8 mt-8 border-b border-border-subtle pb-6 flex justify-between items-end">
+          <div>
+            <Skeleton className="h-10 w-48 mb-2" />
+            <Skeleton className="h-6 w-72" />
+          </div>
+          <Skeleton className="h-10 w-24 rounded" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-5 space-y-8">
+            <div className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-6">
+              <Skeleton className="h-7 w-48" />
+              <div className="space-y-5">
+                <div>
+                  <Skeleton className="h-4 w-24 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                <div>
+                  <Skeleton className="h-4 w-24 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-6">
+              <Skeleton className="h-7 w-32" />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-border-subtle pb-4">
+                  <div className="space-y-1">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                  <Skeleton className="h-6 w-11 rounded-full" />
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <div className="space-y-1">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                  <Skeleton className="h-6 w-11 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:col-span-7">
+            <div className="bg-white p-8 rounded-lg border border-border-subtle shadow-sm space-y-8">
+              <Skeleton className="h-7 w-40 border-b border-border-subtle pb-4" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                <div>
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                <div>
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+                <div>
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-12 w-full rounded-md" />
+                </div>
+              </div>
+              <div className="pt-6 border-t border-border-subtle">
+                <Skeleton className="h-14 w-full rounded-md" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

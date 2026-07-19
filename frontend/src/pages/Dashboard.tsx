@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
+import { Skeleton } from '../components/Skeleton';
 
 interface Meal {
   id: string;
@@ -66,7 +67,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary">local_fire_department</span>
           </div>
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-4xl font-headline-lg text-text-primary font-bold">{loading ? '...' : Math.round(caloriesToday)}</span>
+            {loading ? <Skeleton className="w-16 h-10 inline-block" /> : <span className="text-4xl font-headline-lg text-text-primary font-bold">{Math.round(caloriesToday)}</span>}
             <span className="text-text-secondary text-sm">/ {targetCalories} kcal</span>
           </div>
           <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
@@ -81,7 +82,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary">fitness_center</span>
           </div>
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-4xl font-headline-lg text-text-primary font-bold">{loading ? '...' : Math.round(proteinToday)}</span>
+            {loading ? <Skeleton className="w-16 h-10 inline-block" /> : <span className="text-4xl font-headline-lg text-text-primary font-bold">{Math.round(proteinToday)}</span>}
             <span className="text-text-secondary text-sm">/ {targetProtein} g</span>
           </div>
           <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
@@ -96,7 +97,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary">bakery_dining</span>
           </div>
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-4xl font-headline-lg text-text-primary font-bold">{loading ? '...' : Math.round(carbsToday)}</span>
+            {loading ? <Skeleton className="w-16 h-10 inline-block" /> : <span className="text-4xl font-headline-lg text-text-primary font-bold">{Math.round(carbsToday)}</span>}
             <span className="text-text-secondary text-sm">/ {targetCarbs} g</span>
           </div>
           <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
@@ -111,7 +112,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary">opacity</span>
           </div>
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-4xl font-headline-lg text-text-primary font-bold">{loading ? '...' : Math.round(fatsToday)}</span>
+            {loading ? <Skeleton className="w-16 h-10 inline-block" /> : <span className="text-4xl font-headline-lg text-text-primary font-bold">{Math.round(fatsToday)}</span>}
             <span className="text-text-secondary text-sm">/ {targetFats} g</span>
           </div>
           <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
@@ -131,7 +132,25 @@ export default function Dashboard() {
             <div className="p-8 text-center text-text-secondary">No meals logged yet. Log your first meal!</div>
           )}
           {loading && (
-            <div className="p-8 text-center text-text-secondary">Loading meals...</div>
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="px-8 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-border-subtle last:border-0">
+                <div className="flex items-center gap-6">
+                  <Skeleton className="w-16 h-16 rounded-xl shrink-0" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-6 w-32" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 md:gap-12 self-end md:self-auto">
+                  <div className="hidden md:flex gap-4 md:gap-6">
+                    <Skeleton className="h-10 w-8" />
+                    <Skeleton className="h-10 w-8" />
+                    <Skeleton className="h-10 w-8" />
+                  </div>
+                  <Skeleton className="h-8 w-20" />
+                </div>
+              </div>
+            ))
           )}
           
           {meals.slice(0, 5).map((meal: any, idx) => (
