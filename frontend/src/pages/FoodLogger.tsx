@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
+import BarcodeScanner from '../components/BarcodeScanner';
+import { openFoodFactsApi } from '../services/openFoodFacts';
 
 export default function FoodLogger() {
   const [description, setDescription] = useState('');
@@ -7,6 +9,8 @@ export default function FoodLogger() {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [recentMeals, setRecentMeals] = useState<any[]>([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [barcode, setBarcode] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,6 +60,27 @@ export default function FoodLogger() {
     reader.readAsDataURL(file);
   };
 
+  const handleBarcodeScan = async (scannedBarcode: string) => {
+    setLoading(true);
+    setIsScanning(false);
+    try {
+      const result = await openFoodFactsApi.getProductByBarcode(scannedBarcode);
+      setAnalysisResult(result);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to find product or invalid barcode.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualBarcodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (barcode.trim()) {
+      handleBarcodeScan(barcode.trim());
+    }
+  };
+
   const saveMeal = async () => {
     if (!analysisResult) return;
     setLoading(true);
@@ -89,39 +114,86 @@ export default function FoodLogger() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
         <div className="space-y-stack-md">
-          {/* Hero Section: Photo Upload */}
-          <section className="relative group bg-white border border-border-subtle rounded-lg p-6 shadow-sm">
-            <input 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleImageUpload} 
-              disabled={loading}
-            />
-            <div 
-              onClick={() => !loading && fileInputRef.current?.click()}
-              className="aspect-video w-full rounded-lg bg-surface border-2 border-dashed border-border-input flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:border-primary/50 overflow-hidden relative group-hover:bg-surface-container-low"
-            >
-              {imagePreview ? (
-                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover absolute inset-0 z-10" />
-              ) : (
-                <>
-                  <div className="relative z-10 flex flex-col items-center pointer-events-none">
-                    <div className="w-16 h-16 mb-4 rounded-full bg-primary-container/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
-                      <span className="material-symbols-outlined text-4xl">add_a_photo</span>
-                    </div>
-                    <h2 className="font-headline-sm text-xl text-text-primary font-medium mb-1">Upload Meal Photo</h2>
-                    <p className="font-body-sm text-text-secondary max-w-[240px]">Drag and drop or click to upload. AI will calculate macros instantly.</p>
-                  </div>
-                </>
-              )}
-              {loading && imagePreview && (
-                <div className="absolute inset-0 bg-white/70 z-20 flex items-center justify-center backdrop-blur-sm">
-                  <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
+          {/* Hero Section: Photo Upload / Barcode Scan */}
+          <section className="relative group bg-white border border-border-subtle rounded-lg p-6 shadow-sm min-h-[300px] flex flex-col justify-center">
+            {isScanning ? (
+              <div className="flex flex-col items-center">
+                <div className="w-full flex justify-between items-center mb-4">
+                  <h3 className="font-headline-sm text-lg text-text-primary">Scan Product Barcode</h3>
+                  <button onClick={() => setIsScanning(false)} className="text-text-secondary hover:text-text-primary">
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
                 </div>
-              )}
-            </div>
+                <BarcodeScanner 
+                  onScanSuccess={handleBarcodeScan} 
+                  onScanError={(err) => console.log('Scan error', err)} 
+                />
+                
+                {/* Manual Barcode Fallback */}
+                <form onSubmit={handleManualBarcodeSubmit} className="mt-6 w-full max-w-md flex gap-2">
+                  <input 
+                    type="text" 
+                    value={barcode}
+                    onChange={(e) => setBarcode(e.target.value)}
+                    placeholder="Or type barcode manually" 
+                    className="flex-1 px-4 py-2 bg-surface border border-border-input rounded-lg font-body-md text-text-primary placeholder:text-text-secondary focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={loading || !barcode.trim()}
+                    className="px-4 py-2 bg-primary text-white rounded font-button hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    Lookup
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleImageUpload} 
+                  disabled={loading}
+                />
+                <div 
+                  onClick={() => !loading && fileInputRef.current?.click()}
+                  className="aspect-video w-full rounded-lg bg-surface border-2 border-dashed border-border-input flex flex-col items-center justify-center p-lg text-center cursor-pointer transition-all hover:border-primary/50 overflow-hidden relative group-hover:bg-surface-container-low"
+                >
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover absolute inset-0 z-10" />
+                  ) : (
+                    <>
+                      <div className="relative z-10 flex flex-col items-center pointer-events-none">
+                        <div className="w-16 h-16 mb-4 rounded-full bg-primary-container/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+                          <span className="material-symbols-outlined text-4xl">add_a_photo</span>
+                        </div>
+                        <h2 className="font-headline-sm text-xl text-text-primary font-medium mb-1">Upload Meal Photo</h2>
+                        <p className="font-body-sm text-text-secondary max-w-[240px]">Drag and drop or click to upload. AI will calculate macros instantly.</p>
+                      </div>
+                    </>
+                  )}
+                  {loading && imagePreview && (
+                    <div className="absolute inset-0 bg-white/70 z-20 flex items-center justify-center backdrop-blur-sm">
+                      <div className="w-12 h-12 border-4 border-border-input border-t-primary rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+                {!loading && !imagePreview && (
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsScanning(true);
+                    }}
+                    className="mt-4 w-full py-3 border border-border-subtle rounded-lg text-text-primary font-button flex items-center justify-center gap-2 hover:bg-surface transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-primary">barcode_scanner</span>
+                    Scan Barcode Instead
+                  </button>
+                )}
+              </>
+            )}
           </section>
 
           {/* Search Bar / Text Input */}

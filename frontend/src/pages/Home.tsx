@@ -58,6 +58,71 @@ export default function Home() {
 </div>
 </section>
 
+      {/* INFLUENCER PROMO SECTION */}
+      <section className="max-w-[1200px] mx-auto px-4 lg:px-8 py-stack-lg flex flex-col items-center text-center relative overflow-hidden">
+          {/* Organic Background Elements */}
+          <div className="absolute top-20 left-0 w-64 h-64 bg-primary/20 blur-[60px] rounded-full animate-pulse -z-10 pointer-events-none"></div>
+          <div className="absolute bottom-20 right-0 w-80 h-80 bg-primary/20 blur-[60px] rounded-full -z-10 pointer-events-none" style={{ animationDelay: '1s' }}></div>
+
+          <div className="max-w-md w-full relative z-10">
+              {/* Profile Image Container */}
+              <div className="relative w-full aspect-square mb-12 group">
+                  <div className="absolute -inset-4 bg-white/60 rounded-[2rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500"></div>
+                  <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2rem] rotate-2 transition-transform group-hover:rotate-0 duration-500"></div>
+                  <div className="relative w-full h-full overflow-hidden rounded-[2rem] shadow-2xl border-4 border-white bg-white">
+                      <img alt="Sarah J., Health Influencer" className="w-full h-full object-cover" src="/assets/images/influencer.png"/>
+                  </div>
+                  <div className="absolute -bottom-4 -right-4 bg-white text-primary px-4 py-2 rounded-full shadow-xl flex items-center gap-2 transform rotate-6 animate-bounce border border-border-subtle">
+                      <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                      <span className="font-bold text-[12px] tracking-wide">Top Health Influencer</span>
+                  </div>
+              </div>
+
+              {/* Testimonial Content */}
+              <div className="space-y-4 mt-12">
+                  <div className="flex justify-center gap-1 text-[#facc15] mb-2">
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  </div>
+                  <h1 className="font-headline-lg text-[28px] md:text-[32px] text-text-primary leading-tight px-2">
+                      “NutriSmart AI finally made nutrition tracking feel like a <span className="text-primary italic">breeze</span>, not a chore!”
+                  </h1>
+                  <p className="text-[14px] text-text-secondary tracking-widest uppercase font-bold mt-6">
+                      — Sarah J., Wellness Coach
+                  </p>
+              </div>
+
+              {/* Bento-style Feature Chips */}
+              <div className="grid grid-cols-2 gap-4 w-full mt-10">
+                  <div className="bg-white p-4 rounded-xl flex items-center gap-3 border-b-4 border-primary shadow-sm hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                          <span className="material-symbols-outlined">bolt</span>
+                      </div>
+                      <span className="font-bold text-[12px] text-text-primary text-left uppercase tracking-wider">Fast Input</span>
+                  </div>
+                  <div className="bg-white p-4 rounded-xl flex items-center gap-3 border-b-4 border-primary shadow-sm hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                          <span className="material-symbols-outlined">analytics</span>
+                      </div>
+                      <span className="font-bold text-[12px] text-text-primary text-left uppercase tracking-wider">Deep Insights</span>
+                  </div>
+              </div>
+
+              {/* Action Area */}
+              <div className="w-full mt-12 space-y-4">
+                  <Link to="/login" className="block w-full bg-primary text-white font-bold text-[18px] py-4 rounded-full shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                      Get Started Free
+                  </Link>
+                  <p className="text-[13px] text-text-secondary pt-2">
+                      Join 50,000+ health enthusiasts today. No credit card required.
+                  </p>
+              </div>
+          </div>
+      </section>
+
 <section className="bg-surface-container-low py-stack-lg">
 <div className="max-w-[1200px] mx-auto px-4 lg:px-8">
 <div className="text-center mb-stack-lg">
