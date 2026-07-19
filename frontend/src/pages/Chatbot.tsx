@@ -59,7 +59,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-80px)] lg:h-[100dvh] max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 py-4 lg:py-6 relative">
+    <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px]">
       
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border-subtle shrink-0">
@@ -117,39 +117,40 @@ export default function Chatbot() {
       </main>
 
       {/* Interactive Footer */}
-      <div className="shrink-0 pt-2 lg:pt-3 mt-auto">
-        <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-3 px-1" style={{ scrollbarWidth: 'none' }}>
-          {suggestions.map((reply, idx) => (
-            <button 
-              key={idx}
-              onClick={() => sendMessage(reply)}
+      <div className="fixed bottom-20 lg:bottom-0 left-0 lg:left-72 right-0 bg-slate-50/90 backdrop-blur-md px-2 sm:px-4 lg:px-8 pt-2 pb-2 lg:pb-6 z-40 border-t border-border-subtle/50">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex gap-2 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: 'none' }}>
+            {suggestions.map((reply, idx) => (
+              <button 
+                key={idx}
+                onClick={() => sendMessage(reply)}
+                disabled={loading}
+                className="whitespace-nowrap px-3 py-1.5 bg-white border border-border-subtle rounded-full font-label-md text-xs text-text-secondary hover:text-primary hover:border-primary/50 transition-colors active:scale-95 disabled:opacity-50 shadow-sm"
+              >
+                {reply}
+              </button>
+            ))}
+          </div>
+          
+          <form onSubmit={handleFormSubmit} className="flex items-center gap-2 bg-white p-1 pl-3 rounded-2xl border border-border-subtle shadow-sm focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+            <input 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-2 px-1 outline-none placeholder:text-text-secondary text-sm" 
+              placeholder="Ask about your diet..." 
+              type="text"
               disabled={loading}
-              className="whitespace-nowrap px-3 py-1.5 bg-white border border-border-subtle rounded-full font-label-md text-xs text-text-secondary hover:text-primary hover:border-primary/50 transition-colors active:scale-95 disabled:opacity-50 shadow-sm"
+            />
+            <button 
+              type="submit" 
+              disabled={!input.trim() || loading}
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white hover:opacity-90 active:scale-95 transition-all shadow-sm disabled:opacity-50 shrink-0"
             >
-              {reply}
+              <span className="material-symbols-outlined text-[20px]">send</span>
             </button>
-          ))}
+          </form>
         </div>
-        
-        <form onSubmit={handleFormSubmit} className="flex items-center gap-2 bg-white p-1 pl-3 rounded-2xl border border-border-subtle shadow-sm focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all mb-2 lg:mb-0">
-          <input 
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-2 px-1 outline-none placeholder:text-text-secondary text-sm" 
-            placeholder="Ask about your diet..." 
-            type="text"
-            disabled={loading}
-          />
-          <button 
-            type="submit" 
-            disabled={!input.trim() || loading}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white hover:opacity-90 active:scale-95 transition-all shadow-sm disabled:opacity-50 shrink-0"
-          >
-            <span className="material-symbols-outlined text-[20px]">send</span>
-          </button>
-        </form>
       </div>
-
     </div>
   );
 }
