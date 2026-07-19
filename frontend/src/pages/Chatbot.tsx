@@ -2,9 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
 export default function Chatbot() {
-  const [messages, setMessages] = useState<{role: 'ai'|'user', content: string}[]>([
-    { role: 'ai', content: "Good morning! ☀️ I'm your NutriSmart AI Assistant. How can I help you optimize your health today?" }
-  ]);
+  const [messages, setMessages] = useState<{role: 'ai'|'user', content: string}[]>(() => {
+    const hour = new Date().getHours();
+    let greeting = 'Good evening';
+    if (hour >= 5 && hour < 12) greeting = 'Good morning';
+    else if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
+    
+    return [
+      { role: 'ai', content: `${greeting}! ☀️ I'm your NutriSmart AI Assistant. How can I help you optimize your health today?` }
+    ];
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([
