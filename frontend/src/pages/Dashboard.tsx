@@ -19,7 +19,12 @@ export default function Dashboard() {
   useEffect(() => {
     Promise.all([
       api.get('/meals/history').catch(() => ({ data: { data: [] } })),
-      api.get('/users/profile').catch(() => ({ data: { data: null } }))
+      api.get('/users/profile').catch((err) => {
+        if (err.response?.status === 404) {
+          navigate('/onboarding');
+        }
+        return { data: { data: null } };
+      })
     ]).then(([mealsRes, profileRes]) => {
       setMeals(mealsRes.data.data || []);
       setProfile(profileRes.data.data);
