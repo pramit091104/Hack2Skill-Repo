@@ -239,7 +239,7 @@ export default function FoodLogger() {
                           <span className="material-symbols-outlined text-4xl">add_a_photo</span>
                         </div>
                         <h2 className="font-headline-sm text-xl text-text-primary font-medium mb-1">Upload Meal Photo</h2>
-                        <p className="font-body-sm text-text-secondary max-w-[240px]">Drag and drop or click to upload. AI will calculate macros instantly.</p>
+                        <p className="hidden md:block font-body-sm text-text-secondary max-w-[240px]">Drag and drop or click to upload. AI will calculate macros instantly.</p>
                       </div>
                     </>
                   )}
