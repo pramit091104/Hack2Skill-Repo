@@ -20,7 +20,23 @@ export default function Chatbot() {
     "How's my daily progress?",
     "Explain my macros"
   ]);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
+
+  const placeholders = [
+    "Ask about your diet...",
+    "How many calories in an apple?",
+    "Suggest a high protein breakfast...",
+    "Can I eat carbs at night?",
+    "What should I eat after my workout?"
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [placeholders.length]);
 
   const scrollToBottom = () => {
     if (mainRef.current) {
@@ -69,15 +85,15 @@ export default function Chatbot() {
     <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px]">
       
       {/* Header */}
-      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border-subtle shrink-0">
-        <div className="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-          <span className="material-symbols-outlined text-2xl">psychiatry</span>
+      <div className="flex items-center gap-3 mb-2 pb-2 lg:mb-4 lg:pb-3 border-b border-border-subtle shrink-0">
+        <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+          <span className="material-symbols-outlined text-xl lg:text-2xl">psychiatry</span>
         </div>
         <div>
-          <h1 className="font-headline-sm text-xl font-medium text-text-primary">AI Dietician</h1>
-          <div className="flex items-center gap-2 mt-1">
+          <h1 className="font-headline-sm text-lg lg:text-xl font-medium text-text-primary">AI Dietician</h1>
+          <div className="flex items-center gap-2 mt-0.5">
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-            <span className="font-label-sm text-text-secondary">Always Online</span>
+            <span className="font-label-sm text-text-secondary text-xs">Always Online</span>
           </div>
         </div>
       </div>
@@ -124,7 +140,7 @@ export default function Chatbot() {
       </main>
 
       {/* Interactive Footer */}
-      <div className="fixed bottom-20 lg:bottom-0 left-0 lg:left-72 right-0 bg-slate-50/90 backdrop-blur-md px-2 sm:px-4 lg:px-8 pt-2 pb-2 lg:pb-6 z-40 border-t border-border-subtle/50">
+      <div className="fixed bottom-20 lg:bottom-0 left-0 lg:left-72 right-0 bg-slate-50/90 backdrop-blur-md px-2 sm:px-4 lg:px-8 pt-2 pb-0 lg:pb-6 z-40 border-t border-border-subtle/50">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex gap-2 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: 'none' }}>
             {suggestions.map((reply, idx) => (
@@ -143,8 +159,8 @@ export default function Chatbot() {
             <input 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-2 px-1 outline-none placeholder:text-text-secondary text-sm" 
-              placeholder="Ask about your diet..." 
+              className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-2 px-1 outline-none placeholder:text-text-secondary text-sm transition-all duration-500" 
+              placeholder={placeholders[placeholderIndex]} 
               type="text"
               disabled={loading}
             />
