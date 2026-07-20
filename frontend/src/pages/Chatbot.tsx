@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
+const PLACEHOLDERS = [
+  "Ask about your diet...",
+  "How many calories in an apple?",
+  "Suggest a high protein breakfast...",
+  "Can I eat carbs at night?",
+  "What should I eat after my workout?"
+];
+
 export default function Chatbot() {
   const [messages, setMessages] = useState<{role: 'ai'|'user', content: string}[]>(() => {
     const hour = new Date().getHours();
@@ -21,22 +29,38 @@ export default function Chatbot() {
     "Explain my macros"
   ]);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  const placeholders = [
-    "Ask about your diet...",
-    "How many calories in an apple?",
-    "Suggest a high protein breakfast...",
-    "Can I eat carbs at night?",
-    "What should I eat after my workout?"
-  ];
-
+  // Typewriter effect for placeholder
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [placeholders.length]);
+    const currentText = PLACEHOLDERS[placeholderIndex];
+    let typingTimer: NodeJS.Timeout;
+
+    if (isDeleting) {
+      if (displayText === '') {
+        setIsDeleting(false);
+        setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length);
+      } else {
+        typingTimer = setTimeout(() => {
+          setDisplayText(currentText.substring(0, displayText.length - 1));
+        }, 30); // deleting speed
+      }
+    } else {
+      if (displayText === currentText) {
+        typingTimer = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2000); // pause duration before deleting
+      } else {
+        typingTimer = setTimeout(() => {
+          setDisplayText(currentText.substring(0, displayText.length + 1));
+        }, 50); // typing speed
+      }
+    }
+
+    return () => clearTimeout(typingTimer);
+  }, [displayText, isDeleting, placeholderIndex]);
 
   const scrollToBottom = () => {
     if (mainRef.current) {
@@ -160,7 +184,7 @@ export default function Chatbot() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="flex-1 bg-transparent border-none focus:ring-0 text-text-primary font-body-md py-2 px-1 outline-none placeholder:text-text-secondary text-sm transition-all duration-500" 
-              placeholder={placeholders[placeholderIndex]} 
+              placeholder={displayText || " "} 
               type="text"
               disabled={loading}
             />
