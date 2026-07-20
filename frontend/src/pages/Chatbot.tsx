@@ -106,7 +106,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px] bg-gradient-to-t from-primary/5 to-transparent">
+    <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px]">
       
       {/* Header */}
       <div className="flex items-center gap-3 mb-2 pb-2 lg:mb-4 lg:pb-3 border-b border-border-subtle shrink-0">
@@ -116,7 +116,6 @@ export default function Chatbot() {
         <div>
           <h1 className="font-headline-sm text-lg lg:text-xl font-medium text-text-primary">Niro</h1>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
             <span className="font-label-sm text-text-secondary text-xs">Online</span>
           </div>
         </div>
@@ -165,7 +164,7 @@ export default function Chatbot() {
 
       {/* Interactive Footer */}
       <div className="fixed bottom-20 lg:bottom-0 left-0 lg:left-72 right-0 bg-slate-50/90 backdrop-blur-md px-2 sm:px-4 lg:px-8 pt-2 pb-0 lg:pb-6 z-40 border-t border-border-subtle/50">
-        <div className="max-w-[1200px] mx-auto">
+        <div className="max-w-[1200px] mx-auto relative">
           <div className="flex gap-2 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: 'none' }}>
             {suggestions.map((reply, idx) => (
               <button 
