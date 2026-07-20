@@ -17,7 +17,7 @@ export default function Chatbot() {
     else if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
     
     return [
-      { role: 'ai', content: `${greeting}! ☀️ I'm your NutriSmart AI Assistant. How can I help you optimize your health today?` }
+      { role: 'ai', content: `${greeting}! ☀️ I'm Niro. How can I help you optimize your health today?` }
     ];
   });
   const [input, setInput] = useState('');
@@ -106,7 +106,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px]">
+    <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px] bg-gradient-to-t from-primary/5 to-transparent">
       
       {/* Header */}
       <div className="flex items-center gap-3 mb-2 pb-2 lg:mb-4 lg:pb-3 border-b border-border-subtle shrink-0">
@@ -114,10 +114,10 @@ export default function Chatbot() {
           <span className="material-symbols-outlined text-xl lg:text-2xl">psychiatry</span>
         </div>
         <div>
-          <h1 className="font-headline-sm text-lg lg:text-xl font-medium text-text-primary">AI Dietician</h1>
+          <h1 className="font-headline-sm text-lg lg:text-xl font-medium text-text-primary">Niro</h1>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-            <span className="font-label-sm text-text-secondary text-xs">Always Online</span>
+            <span className="font-label-sm text-text-secondary text-xs">Online</span>
           </div>
         </div>
       </div>
