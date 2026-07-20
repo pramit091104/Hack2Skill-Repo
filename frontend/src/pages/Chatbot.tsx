@@ -108,8 +108,11 @@ export default function Chatbot() {
   return (
     <div className="flex flex-col min-h-[calc(100dvh-80px)] lg:min-h-screen max-w-[1200px] mx-auto px-2 sm:px-4 lg:px-8 pt-4 lg:pt-6 relative pb-[160px]">
       
+      {/* Premium Full-Screen Background Gradient */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-t from-primary/15 via-primary/5 to-transparent pointer-events-none" />
+      
       {/* Header */}
-      <div className="flex items-center gap-3 mb-2 pb-2 lg:mb-4 lg:pb-3 border-b border-border-subtle shrink-0">
+      <div className="flex items-center gap-3 mb-2 pb-2 lg:mb-4 lg:pb-3 border-b border-border-subtle shrink-0 relative z-10">
         <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
           <span className="material-symbols-outlined text-xl lg:text-2xl">psychiatry</span>
         </div>
@@ -122,7 +125,7 @@ export default function Chatbot() {
       </div>
 
       {/* Main Chat Area */}
-      <main ref={mainRef} className="flex-1 overflow-y-auto px-2 lg:px-4 scroll-smooth flex flex-col gap-4 pb-4" style={{ scrollbarWidth: 'thin' }}>
+      <main ref={mainRef} className="flex-1 overflow-y-auto px-2 lg:px-4 scroll-smooth flex flex-col gap-4 pb-4 relative z-10" style={{ scrollbarWidth: 'thin' }}>
         {messages.map((msg, i) => (
           <div key={i} className={`flex max-w-[85%] ${msg.role === 'user' ? 'self-end justify-end' : 'self-start justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
             
@@ -163,7 +166,7 @@ export default function Chatbot() {
       </main>
 
       {/* Interactive Footer */}
-      <div className="fixed bottom-20 lg:bottom-0 left-0 lg:left-72 right-0 bg-slate-50/90 backdrop-blur-md px-2 sm:px-4 lg:px-8 pt-2 pb-0 lg:pb-6 z-40 border-t border-border-subtle/50">
+      <div className="fixed bottom-16 lg:bottom-0 left-0 lg:left-72 right-0 bg-white rounded-t-[2rem] border-t border-x lg:border-x-0 border-border-subtle/30 px-2 sm:px-4 lg:px-8 pt-4 pb-2 lg:pb-6 z-40 shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.05)]">
         <div className="max-w-[1200px] mx-auto relative">
           <div className="flex gap-2 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: 'none' }}>
             {suggestions.map((reply, idx) => (

@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { Skeleton } from '../components/Skeleton';
+import { ComposedChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface Meal {
   id: string;
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+  const [activeMetric, setActiveMetric] = useState<'calories' | 'protein' | 'carbs' | 'fat'>('calories');
 
   useEffect(() => {
     Promise.all([
@@ -49,6 +51,55 @@ export default function Dashboard() {
   const proPercent = Math.min((proteinToday / targetProtein) * 100, 100);
   const carbPercent = Math.min((carbsToday / targetCarbs) * 100, 100);
   const fatPercent = Math.min((fatsToday / targetFats) * 100, 100);
+
+  const getLast7DaysData = () => {
+    const data = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const shortDay = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+      const dayMeals = meals.filter(m => {
+        const mDate = new Date(m.timestamp);
+        mDate.setHours(0, 0, 0, 0);
+        return mDate.getTime() === date.getTime();
+      });
+
+      const calories = dayMeals.reduce((s, m) => s + (m.nutritionSummary?.calories || 0), 0);
+      const protein = dayMeals.reduce((s, m) => s + (m.nutritionSummary?.protein || 0), 0);
+      const carbs = dayMeals.reduce((s, m) => s + (m.nutritionSummary?.carbs || 0), 0);
+      const fat = dayMeals.reduce((s, m) => s + (m.nutritionSummary?.fat || 0), 0);
+
+      const singleLetterDay = shortDay.charAt(0);
+
+      data.push({
+        name: singleLetterDay,
+        fullName: shortDay,
+        calories,
+        protein,
+        carbs,
+        fat,
+      });
+    }
+    return data;
+  };
+
+  const chartData = getLast7DaysData();
+  
+  const metricConfigs = {
+    calories: { label: 'Calories', unit: 'cal', color: '#166534', target: targetCalories },
+    protein: { label: 'Protein', unit: 'g', color: '#f59e0b', target: targetProtein },
+    carbs: { label: 'Carbs', unit: 'g', color: '#3b82f6', target: targetCarbs },
+    fat: { label: 'Fats', unit: 'g', color: '#ef4444', target: targetFats },
+  };
+
+  const activeConfig = metricConfigs[activeMetric];
+  const weeklyAvg = chartData.reduce((acc, curr) => acc + (curr[activeMetric] as number), 0) / 7;
+  const maxInWeek = Math.max(...chartData.map(d => d[activeMetric] as number));
+  const yAxisMax = Math.max(activeConfig.target, maxInWeek);
 
   return (
     <div className="px-4 lg:px-8 py-stack-md max-w-[1200px] mx-auto min-h-screen">
@@ -125,6 +176,71 @@ export default function Dashboard() {
           </div>
           <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
             <div className="bg-primary h-full transition-all duration-1000 ease-out" style={{ width: `${fatPercent}%` }}></div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7-Day Trends Graph */}
+      <section className="mb-stack-lg">
+        <div className="bg-white rounded-[1.5rem] lg:rounded-[2rem] border border-border-subtle p-5 lg:p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-4 lg:mb-6">
+            <h3 className="font-headline-sm text-lg lg:text-xl text-text-primary font-bold">{activeConfig.label}</h3>
+            <button 
+              onClick={() => {
+                const keys = Object.keys(metricConfigs) as Array<keyof typeof metricConfigs>;
+                const currentIndex = keys.indexOf(activeMetric);
+                const nextIndex = (currentIndex + 1) % keys.length;
+                setActiveMetric(keys[nextIndex]);
+              }}
+              className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-surface-container-high transition-colors"
+            >
+              <span className="material-symbols-outlined text-text-secondary">chevron_right</span>
+            </button>
+          </div>
+          
+          <div className="flex flex-row items-end gap-4 lg:gap-8 h-[120px] lg:h-[140px]">
+            <div className="flex-shrink-0 pb-1 lg:pb-0">
+              <p className="text-text-secondary font-label-md text-xs font-medium mb-1">This week's avg</p>
+              <p className="font-headline-lg text-xl lg:text-2xl font-bold text-text-primary">{Math.round(weeklyAvg)} {activeConfig.unit}</p>
+            </div>
+            
+            <div className="flex-1 w-full h-full relative">
+              {loading ? (
+                <Skeleton className="w-full h-full rounded-lg" />
+              ) : chartData.every(d => d[activeMetric] === 0) ? (
+                <div className="w-full h-full flex flex-col items-center justify-center text-text-secondary border-2 border-dashed border-border-subtle rounded-xl bg-surface-container-lowest">
+                  <span className="material-symbols-outlined text-3xl mb-2 opacity-50">bar_chart</span>
+                  <p className="text-xs">No {activeConfig.label.toLowerCase()} logged.</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 12, fill: '#9CA3AF', fontWeight: 600 }} 
+                      dy={10} 
+                    />
+                    <YAxis hide={true} domain={[0, yAxisMax]} />
+                    <Tooltip 
+                      cursor={{ fill: 'transparent' }}
+                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', fontFamily: 'Inter, sans-serif', padding: '12px 16px' }}
+                      labelStyle={{ color: '#6B7280', fontSize: '12px', marginBottom: '4px', fontWeight: 500 }}
+                      formatter={(value: number) => [`${value} ${activeConfig.unit}`, activeConfig.label]}
+                      labelFormatter={(_, payload) => payload?.[0]?.payload?.fullName || ''}
+                    />
+                    <Bar 
+                      dataKey={activeMetric} 
+                      fill={activeConfig.color} 
+                      radius={[20, 20, 20, 20]} 
+                      background={{ fill: '#F3F4F6', radius: 20 }}
+                      maxBarSize={14}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </div>
         </div>
       </section>
