@@ -54,7 +54,15 @@ export default function Dashboard() {
     <div className="px-4 lg:px-8 py-stack-md max-w-[1200px] mx-auto min-h-screen">
       {/* Greeting */}
       <section className="mb-stack-lg animate-in fade-in slide-in-from-bottom-4 duration-700 mt-8">
-        <h1 className="font-headline-lg text-4xl text-text-primary mb-2">Good morning, {user?.email?.split('@')[0] || 'Alex'}</h1>
+        <h1 className="font-headline-lg text-4xl text-text-primary mb-2">
+          {(() => {
+            const hour = new Date().getHours();
+            let greeting = 'Good evening';
+            if (hour >= 5 && hour < 12) greeting = 'Good morning';
+            else if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
+            return `${greeting}, ${profile?.displayName || user?.email?.split('@')[0] || 'Alex'}`;
+          })()}
+        </h1>
         <p className="text-text-secondary font-body-md text-lg">You've reached {Math.round(calPercent)}% of your daily calorie goal. Keep it up!</p>
       </section>
 
